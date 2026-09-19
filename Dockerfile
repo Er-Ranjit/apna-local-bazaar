@@ -42,6 +42,7 @@ RUN mkdir -p storage/framework/cache \
 
 # Clear Laravel configuration cache
 RUN php artisan config:clear
+RUN php artisan migrate --force
 
 EXPOSE 10000
 
