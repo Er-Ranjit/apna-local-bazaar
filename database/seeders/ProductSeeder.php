@@ -29,9 +29,10 @@ class ProductSeeder extends Seeder
                 'price' => 120,
                 'discount_price' => 99,
                 'description' => 'Fresh and tasty cheese burger',
-                'image' => null,
+                'image' => 'products/product.jpg',
                 'stock' => 50,
             ],
+
             [
                 'name' => 'Fresh Apples',
                 'slug' => 'fresh-apples',
@@ -39,9 +40,10 @@ class ProductSeeder extends Seeder
                 'price' => 180,
                 'discount_price' => 160,
                 'description' => 'Fresh quality apples',
-                'image' => null,
+                'image' => 'products/product.jpg',
                 'stock' => 100,
             ],
+
             [
                 'name' => 'Basmati Rice',
                 'slug' => 'basmati-rice',
@@ -49,9 +51,10 @@ class ProductSeeder extends Seeder
                 'price' => 220,
                 'discount_price' => 199,
                 'description' => 'Premium quality basmati rice',
-                'image' => null,
+                'image' => 'products/product.jpg',
                 'stock' => 75,
             ],
+
             [
                 'name' => 'Veg Pizza',
                 'slug' => 'veg-pizza',
@@ -59,14 +62,16 @@ class ProductSeeder extends Seeder
                 'price' => 250,
                 'discount_price' => 219,
                 'description' => 'Fresh vegetable pizza',
-                'image' => null,
+                'image' => 'products/product.jpg',
                 'stock' => 40,
             ],
         ];
 
         foreach ($products as $product) {
             Product::updateOrCreate(
-                ['slug' => $product['slug']],
+                [
+                    'slug' => $product['slug'],
+                ],
                 [
                     'vendor_id' => $vendor->id,
                     'category_id' => $product['category_id'],
