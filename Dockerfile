@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.5-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -40,10 +40,9 @@ RUN mkdir -p storage/framework/cache \
     bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Laravel production settings
+# Clear Laravel configuration cache
 RUN php artisan config:clear
 
-# Render provides PORT
 EXPOSE 10000
 
 # Start Laravel
