@@ -1,0 +1,140 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Local Bazaar Vendor",
+      "email": "vendor@example.com",
+      "email_verified_at": null,
+      "password": "$2y$12$9A4rSKVVpG9IutlCGuckIe9h7Mr/TQEsbehuMZ/K/NyquDjxq.d12",
+      "remember_token": null,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T04:11:16.000Z",
+      "role": "vendor",
+      "latitude": null,
+      "longitude": null,
+      "is_active": true
+    }
+  ],
+  "vendors": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "shop_name": "Fresh Mart",
+      "phone": "9876543210",
+      "address": "Main Market",
+      "city": "Mohali",
+      "image": null,
+      "is_active": true,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T02:01:58.000Z",
+      "latitude": null,
+      "longitude": null
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Fast Food",
+      "slug": "fast-food",
+      "image": null,
+      "description": "Pizza, Burger, Momos and other fast food items",
+      "is_active": true,
+      "created_at": "2026-09-19T01:36:30.000Z",
+      "updated_at": "2026-09-19T01:36:30.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Fruits & Vegetables",
+      "slug": "fruits-vegetables",
+      "image": null,
+      "description": "Fresh fruits and vegetables",
+      "is_active": true,
+      "created_at": "2026-09-19T01:36:30.000Z",
+      "updated_at": "2026-09-19T01:36:30.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Kirana",
+      "slug": "kirana",
+      "image": null,
+      "description": "Daily grocery and household items",
+      "is_active": true,
+      "created_at": "2026-09-19T01:36:30.000Z",
+      "updated_at": "2026-09-19T01:36:30.000Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "vendor_id": "1",
+      "category_id": "1",
+      "name": "Cheese Burger",
+      "slug": "cheese-burger",
+      "description": "Fresh and tasty cheese burger",
+      "price": "120.00",
+      "discount_price": "99.00",
+      "image": "products/product.jpg",
+      "stock": 50,
+      "is_available": true,
+      "is_active": true,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T04:04:21.000Z"
+    },
+    {
+      "id": "2",
+      "vendor_id": "1",
+      "category_id": "2",
+      "name": "Fresh Apples",
+      "slug": "fresh-apples",
+      "description": "Fresh quality apples",
+      "price": "180.00",
+      "discount_price": "160.00",
+      "image": "products/product.jpg",
+      "stock": 100,
+      "is_available": true,
+      "is_active": true,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T04:04:21.000Z"
+    },
+    {
+      "id": "3",
+      "vendor_id": "1",
+      "category_id": "3",
+      "name": "Basmati Rice",
+      "slug": "basmati-rice",
+      "description": "Premium quality basmati rice",
+      "price": "220.00",
+      "discount_price": "199.00",
+      "image": "products/product.jpg",
+      "stock": 75,
+      "is_available": true,
+      "is_active": true,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T04:04:21.000Z"
+    },
+    {
+      "id": "4",
+      "vendor_id": "1",
+      "category_id": "1",
+      "name": "Veg Pizza",
+      "slug": "veg-pizza",
+      "description": "Fresh vegetable pizza",
+      "price": "250.00",
+      "discount_price": "219.00",
+      "image": "products/product.jpg",
+      "stock": 40,
+      "is_available": true,
+      "is_active": true,
+      "created_at": "2026-09-19T02:01:58.000Z",
+      "updated_at": "2026-09-19T04:04:21.000Z"
+    }
+  ],
+  "addresses": [],
+  "carts": [],
+  "cart_items": [],
+  "orders": [],
+  "order_items": [],
+  "delivery_boys": [],
+  "delivery_assignments": [],
+  "delivery_assignment_locations": []
+}
