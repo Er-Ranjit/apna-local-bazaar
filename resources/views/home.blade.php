@@ -1004,7 +1004,7 @@
                         <button type="button" class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-lg text-slate-400 shadow-sm transition hover:text-rose-500" aria-label="Wishlist">♡</button>
                         <a href="{{ route('product.show', $product->slug) }}" class="block">
                             <div class="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-slate-50 px-4 py-4">
-                                <img src="{{ !empty($product->image) ? asset('images/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}" alt="{{ $product->name }}" class="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';">
+                                <img src="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}" alt="{{ $product->name }}" class="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';">
                             </div>
                         </a>
                     </div>
@@ -1034,7 +1034,7 @@
                                         data-product-id="{{ $product->id }}"
                                         data-product-name="{{ $product->name }}"
                                         data-product-price="{{ $product->discount_price ?? $product->price }}"
-                                        data-product-image="{{ !empty($product->image) ? asset('images/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
+                                        data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
                                     >
                                         @csrf
 
@@ -1166,7 +1166,7 @@
                             @if(!empty($product->image))
 
                                 <img
-                                    src="{{ asset('images/' . ltrim($product->image, '/')) }}"
+                                    src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
                                     alt="{{ $product->name }}"
                                     class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
                                     onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -1231,7 +1231,7 @@
                                     data-product-id="{{ $product->id }}"
                                     data-product-name="{{ $product->name }}"
                                     data-product-price="{{ $product->discount_price ?? $product->price }}"
-                                    data-product-image="{{ !empty($product->image) ? asset('images/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
+                                    data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
                                 >
                                     @csrf
 
