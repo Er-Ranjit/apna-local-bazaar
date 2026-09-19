@@ -61,7 +61,7 @@
 
                     <button
                         type="submit"
-                        class="hidden sm:inline-flex rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-500 transition hover:bg-red-50"
+                        class="hidden rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-500 transition hover:bg-red-50 sm:inline-flex"
                     >
                         Logout
                     </button>
@@ -572,6 +572,25 @@
                                 </div>
 
 
+                                {{-- LIVE LOCATION --}}
+                                @if(in_array($assignment->status, ['picked_up', 'out_for_delivery']))
+                                    <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+
+                                        <p class="text-sm font-black text-emerald-800">
+                                            📍 Live Location
+                                        </p>
+
+                                        <p
+                                            id="gps-status-{{ $assignment->id }}"
+                                            class="mt-1 text-xs text-emerald-700"
+                                        >
+                                            Location tracking is ready.
+                                        </p>
+
+                                    </div>
+                                @endif
+
+
                                 {{-- FORM --}}
                                 <form
                                     action="{{ route('delivery-boy.orders.update-status', $assignment->id) }}"
@@ -734,6 +753,288 @@
     <div class="h-20 sm:hidden"></div>
 
 </div>
+
+
+{{-- GPS TRACKING SCRIPT --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const csrfToken = '{{ csrf_token() }}';
+
+
+    /*
+    |------------------------------------------------------------
+    | Find active GPS tracking elements
+    |------------------------------------------------------------
+    */
+
+    const gpsStatusElements = document.querySelectorAll(
+        '[id^="gps-status-"]'
+    );
+
+
+    if (!gpsStatusElements.length) {
+        return;
+    }
+
+
+    /*
+    |------------------------------------------------------------
+    | Store GPS watcher IDs
+    |------------------------------------------------------------
+    */
+
+    const watchers = {};
+
+
+    /*
+    |------------------------------------------------------------
+    | Send GPS location to Laravel
+    |------------------------------------------------------------
+    */
+
+    function sendLocation(assignmentId, position) {
+
+        const coords = position.coords;
+
+
+        fetch(
+            '{{ url('/delivery-boy/orders') }}/' +
+            assignmentId +
+            '/location',
+            {
+                method: 'PUT',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+
+                body: JSON.stringify({
+                    latitude: coords.latitude,
+                    longitude: coords.longitude,
+                    accuracy: coords.accuracy ?? null,
+                    speed: coords.speed ?? null,
+                    heading: coords.heading ?? null
+                })
+            }
+        )
+        .then(function (response) {
+
+            return response.json().then(function (data) {
+
+                return {
+                    ok: response.ok,
+                    data: data
+                };
+
+            });
+
+        })
+        .then(function (result) {
+
+            const statusElement =
+                document.getElementById(
+                    'gps-status-' + assignmentId
+                );
+
+
+            if (!statusElement) {
+                return;
+            }
+
+
+            if (result.ok && result.data.success) {
+
+                statusElement.textContent =
+                    '📍 Location sharing is active. Last update: ' +
+                    new Date().toLocaleTimeString();
+
+            } else {
+
+                statusElement.textContent =
+                    result.data.message ||
+                    'Unable to update location.';
+
+            }
+
+        })
+        .catch(function (error) {
+
+            console.error(
+                'GPS update error:',
+                error
+            );
+
+
+            const statusElement =
+                document.getElementById(
+                    'gps-status-' + assignmentId
+                );
+
+
+            if (statusElement) {
+
+                statusElement.textContent =
+                    'GPS connection error.';
+
+            }
+
+        });
+
+    }
+
+
+    /*
+    |------------------------------------------------------------
+    | GPS error handler
+    |------------------------------------------------------------
+    */
+
+    function handleGpsError(assignmentId, error) {
+
+        const statusElement =
+            document.getElementById(
+                'gps-status-' + assignmentId
+            );
+
+
+        if (!statusElement) {
+            return;
+        }
+
+
+        if (error.code === 1) {
+
+            statusElement.textContent =
+                'Location permission was denied.';
+
+        } else if (error.code === 2) {
+
+            statusElement.textContent =
+                'Unable to detect your location.';
+
+        } else if (error.code === 3) {
+
+            statusElement.textContent =
+                'GPS request timed out.';
+
+        } else {
+
+            statusElement.textContent =
+                'Unable to access GPS.';
+
+        }
+
+    }
+
+
+    /*
+    |------------------------------------------------------------
+    | Start GPS tracking
+    |------------------------------------------------------------
+    */
+
+    function startTracking(assignmentId) {
+
+        const statusElement =
+            document.getElementById(
+                'gps-status-' + assignmentId
+            );
+
+
+        if (!statusElement) {
+            return;
+        }
+
+
+        if (!navigator.geolocation) {
+
+            statusElement.textContent =
+                'Geolocation is not supported by this browser.';
+
+            return;
+        }
+
+
+        statusElement.textContent =
+            'Requesting your location...';
+
+
+        watchers[assignmentId] =
+            navigator.geolocation.watchPosition(
+
+                function (position) {
+
+                    sendLocation(
+                        assignmentId,
+                        position
+                    );
+
+                },
+
+                function (error) {
+
+                    handleGpsError(
+                        assignmentId,
+                        error
+                    );
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 5000,
+                    timeout: 15000
+                }
+
+            );
+
+    }
+
+
+    /*
+    |------------------------------------------------------------
+    | Start tracking for all active assignments
+    |------------------------------------------------------------
+    */
+
+    gpsStatusElements.forEach(function (element) {
+
+        const assignmentId =
+            element.id.replace(
+                'gps-status-',
+                ''
+            );
+
+
+        startTracking(assignmentId);
+
+    });
+
+
+    /*
+    |------------------------------------------------------------
+    | Clear GPS watchers when page closes
+    |------------------------------------------------------------
+    */
+
+    window.addEventListener('beforeunload', function () {
+
+        Object.values(watchers).forEach(function (watcherId) {
+
+            navigator.geolocation.clearWatch(
+                watcherId
+            );
+
+        });
+
+    });
+
+});
+</script>
 
 </body>
 </html>

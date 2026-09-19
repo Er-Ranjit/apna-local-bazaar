@@ -1,65 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Admin Dashboard - Apna Local Bazaar
-    </title>
-
-    @vite([
-        'resources/css/app.css',
-        'resources/js/app.js'
-    ])
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Apna Local Bazaar</title>
+    @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
-
 
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
 
-
-    {{-- =========================================================
-        SIDEBAR
-    ========================================================== --}}
-
-    <aside
-        class="fixed inset-y-0 left-0 z-50 hidden w-72 border-r border-slate-200 bg-white lg:block"
-    >
-
+    <aside class="fixed inset-y-0 left-0 z-50 hidden w-72 border-r border-slate-200 bg-white lg:block">
         <div class="flex h-full flex-col">
-
 
             {{-- BRAND --}}
             <div class="flex h-20 items-center border-b border-slate-100 px-6">
 
-                <a
-                    href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3"
-                >
-
-                    <img
-                        src="{{ asset('images/logo.png') }}"
-                        alt="Apna Local Bazaar"
-                        class="h-11 w-auto"
-                    >
-
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
+                    <img src="{{ asset('images/logo.png') }}" alt="Apna Local Bazaar" class="h-11 w-auto">
                     <div>
-
-                        <p class="text-sm font-black text-slate-950">
-                            Apna Local Bazaar
-                        </p>
-
-                        <p class="text-xs text-slate-400">
-                            Admin Panel
-                        </p>
-
+                        <p class="text-sm font-black text-slate-950">Apna Local Bazaar</p>
+                        <p class="text-xs text-slate-400">Admin Panel</p>
                     </div>
-
                 </a>
 
             </div>
@@ -67,39 +28,19 @@
 
             {{-- NAV --}}
             <nav class="flex-1 space-y-2 overflow-y-auto px-4 py-6">
-
-                <p class="px-3 pb-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
-                    Management
-                </p>
-
+                <p class="px-3 pb-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Management</p>
 
                 {{-- Dashboard --}}
-                <a
-                    href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700"
-                >
-
-                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-                        📊
-                    </span>
-
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
+                 <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">📊</span>
                     Dashboard
-
                 </a>
 
 
                 {{-- Users --}}
-                <a
-                    href="{{ route('admin.users.index') }}"
-                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-                >
-
-                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
-                        👥
-                    </span>
-
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">👥</span>
                     Users
-
                 </a>
 
 
@@ -197,38 +138,48 @@
 
 
         {{-- HEADER --}}
-        <header
-            class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl"
-        >
-
-            <div
-                class="flex min-h-[72px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
-            >
-
+        <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+            <div class="flex min-h-[72px] flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
                 <div>
-
-                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">
-                        Admin Panel
-                    </p>
-
-                    <h1 class="mt-1 text-xl font-black text-slate-950 sm:text-2xl">
-                        Dashboard
-                    </h1>
-
+                     <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">Admin Panel</p>
+                    <h1 class="mt-1 text-xl font-black text-slate-950 sm:text-2xl">Dashboard</h1>
                 </div>
 
+                <div class="flex min-w-0 flex-1 items-center gap-2 lg:justify-end">
+                    {{-- DASHBOARD SEARCH --}}
+                    <div class="relative min-w-0 flex-1 lg:max-w-xl">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">🔎</div>
+                        <input
+                            id="adminDashboardSearch"
+                            type="search"
+                            autocomplete="off"
+                            placeholder="Search orders, products, customers..."
+                            class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-11 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                        >
+                        <button
+                            type="button"
+                            id="adminDashboardSearchClear"
+                            class="absolute inset-y-0 right-2 my-2 hidden h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+                            aria-label="Clear search"
+                        >×</button>
 
-                <div class="flex items-center gap-2">
-
+                        <div
+                            id="adminSearchMenu"
+                            class="absolute left-0 right-0 top-12 z-50 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl"
+                        >
+                            <p class="px-3 pb-2 pt-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">Quick Search</p>
+                            <div class="grid gap-1 sm:grid-cols-2">
+                                <a href="{{ route('admin.users.index') }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700">👥 Users</a>
+                                <a href="{{ route('admin.vendors.index') }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700">🏪 Vendors</a>
+                                <a href="{{ route('admin.products.index') }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700">📦 Products</a>
+                                <a href="{{ route('admin.orders.index') }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700">🛒 Orders</a>
+                                <a href="{{ route('admin.delivery-assignments.index') }}" class="rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 sm:col-span-2">🚚 Delivery Assignments</a>
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- STORE --}}
-                    <a
-                        href="{{ route('home') }}"
-                        class="hidden rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 sm:inline-flex"
-                    >
-                        View Store
-                    </a>
-
+                    <a href="{{ route('home') }}" class="hidden rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 xl:inline-flex">View Store</a>
 
                     {{-- ADMIN --}}
                     <div class="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
@@ -285,6 +236,21 @@
         ========================================================== --}}
 
         <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+
+            <div
+                id="adminSearchStatus"
+                class="mb-4 hidden items-center justify-between gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800"
+            >
+                <span id="adminSearchStatusText"></span>
+                <button
+                    type="button"
+                    id="adminSearchStatusClear"
+                    class="rounded-lg bg-white px-3 py-1.5 font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-100"
+                >
+                    Clear
+                </button>
+            </div>
+
 
 
             {{-- WELCOME --}}
@@ -651,7 +617,7 @@
                                 @endphp
 
 
-                                <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                                <div class="admin-searchable flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6" data-search="{{ strtolower(($order->order_number ?? '') . ' ' . ($order->user->name ?? '') . ' ' . ($order->status ?? '')) }}">
 
                                     <div class="flex min-w-0 items-center gap-3">
 
@@ -731,7 +697,7 @@
 
                             @foreach($lowStockProducts as $product)
 
-                                <div class="flex items-center justify-between gap-3 p-4">
+                                <div class="admin-searchable flex items-center justify-between gap-3 p-4" data-search="{{ strtolower(($product->name ?? '') . ' ' . ($product->vendor->shop_name ?? '')) }}">
 
                                     <div class="min-w-0">
 
@@ -891,22 +857,92 @@
             <footer class="mt-8 border-t border-slate-200 pt-6">
 
                 <div class="flex flex-col gap-2 text-center text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-
-                    <p>
-                        © {{ date('Y') }} Apna Local Bazaar
-                    </p>
-
-                    <p>
-                        Admin Control Center
-                    </p>
-
+                    <p>© {{ date('Y') }} Apna Local Bazaar</p>
+                    <p>Admin Control Center</p>
                 </div>
 
             </footer>
 
         </main>
-
     </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('adminDashboardSearch');
+            const clearButton = document.getElementById('adminDashboardSearchClear');
+            const menu = document.getElementById('adminSearchMenu');
+            const status = document.getElementById('adminSearchStatus');
+            const statusText = document.getElementById('adminSearchStatusText');
+            const statusClear = document.getElementById('adminSearchStatusClear');
+            const rows = Array.from(document.querySelectorAll('.admin-searchable'));
+
+            if (!input) return;
+
+            const setMenu = (show) => menu?.classList.toggle('hidden', !show);
+
+            const applySearch = () => {
+                const query = input.value.trim().toLowerCase();
+                let visible = 0;
+
+                rows.forEach((row) => {
+                    const haystack = (row.dataset.search || '').toLowerCase();
+                    const match = !query || haystack.includes(query);
+                    row.classList.toggle('hidden', !match);
+                    if (match) visible++;
+                });
+
+                clearButton?.classList.toggle('hidden', !query);
+                clearButton?.classList.toggle('inline-flex', !!query);
+
+                status?.classList.toggle('hidden', !query);
+                status?.classList.toggle('flex', !!query);
+
+                if (statusText && query) {
+                    statusText.textContent =
+                        `${visible} matching activity item${visible === 1 ? '' : 's'} found for "${input.value.trim()}"`;
+                }
+
+                setMenu(!query);
+            };
+
+            const clearSearch = () => {
+                input.value = '';
+                rows.forEach(row => row.classList.remove('hidden'));
+                clearButton?.classList.add('hidden');
+                clearButton?.classList.remove('inline-flex');
+                status?.classList.add('hidden');
+                status?.classList.remove('flex');
+                setMenu(true);
+                input.focus();
+            };
+
+            input.addEventListener('focus', () => {
+                if (!input.value.trim()) setMenu(true);
+            });
+
+            input.addEventListener('input', applySearch);
+
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    clearSearch();
+                    setMenu(false);
+                }
+            });
+
+            clearButton?.addEventListener('click', clearSearch);
+            statusClear?.addEventListener('click', clearSearch);
+
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('#adminDashboardSearch') &&
+                    !event.target.closest('#adminSearchMenu')) {
+                    setMenu(false);
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

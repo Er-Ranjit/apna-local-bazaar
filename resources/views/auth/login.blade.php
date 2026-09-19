@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Login - Apna Local Bazaar</title>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="min-h-screen overflow-x-hidden bg-slate-950 text-slate-900 antialiased">
-
-
-    {{-- =========================================================
-        BACKGROUND
-    ========================================================== --}}
+    
     <div class="pointer-events-none fixed inset-0 overflow-hidden">
 
         <div class="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl"></div>
@@ -352,16 +345,23 @@
                             {{-- PASSWORD --}}
                             <div class="group">
 
-                                <div class="mb-2 flex items-center justify-between">
+                                <div class="mb-2 flex items-center justify-between gap-3">
 
-                                    <label
-                                        for="password"
-                                        class="block text-sm font-bold text-slate-700"
-                                    >
-                                        Password
-                                    </label>
+    <label
+        for="password"
+        class="block text-sm font-bold text-slate-700"
+    >
+        Password
+    </label>
 
-                                </div>
+    <a
+        href="{{ url('/forgot-password') }}"
+        class="text-xs font-bold text-emerald-600 transition hover:text-emerald-700 hover:underline"
+    >
+        Forgot password?
+    </a>
+
+</div>
 
 
                                 <div class="relative">

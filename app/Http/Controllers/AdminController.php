@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    /**
-     * Admin Dashboard
-     */
+    
+      //Admin Dashboard
+     
     public function dashboard()
     {
         $usersCount = User::count();
@@ -75,19 +75,14 @@ class AdminController extends Controller
         ));
     }
 
-
-    /**
-     * Users Management
-     */
+     //Users Management
+     
     public function users(Request $request)
     {
         $query = User::query();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Search by name or email
-        |--------------------------------------------------------------------------
-        */
+        //Search by name or email
+
         if ($request->filled('search')) {
 
             $search = trim($request->search);
@@ -100,12 +95,8 @@ class AdminController extends Controller
             });
         }
 
+    //Filter by role
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter by role
-        |--------------------------------------------------------------------------
-        */
         if ($request->filled('role')) {
 
             $query->where(
@@ -126,19 +117,14 @@ class AdminController extends Controller
     }
 
 
-    /**
-     * Vendors Management
-     */
+    //Vendors Management
+
     public function vendors(Request $request)
     {
         $query = Vendor::with('user');
 
+        //Search
 
-        /*
-        |--------------------------------------------------------------------------
-        | Search
-        |--------------------------------------------------------------------------
-        */
         if ($request->filled('search')) {
 
             $search = trim($request->search);
@@ -182,12 +168,8 @@ class AdminController extends Controller
             });
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Active / Inactive
-        |--------------------------------------------------------------------------
-        */
+        //Active / Inactive
+        
         if ($request->filled('status')) {
 
             if ($request->status === 'active') {
@@ -222,9 +204,8 @@ class AdminController extends Controller
     }
 
 
-    /**
-     * Products Management
-     */
+    //Products Management
+
     public function products(Request $request)
     {
         $query = Product::with([
@@ -233,11 +214,8 @@ class AdminController extends Controller
         ]);
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Search Product / Vendor / Category
-        |--------------------------------------------------------------------------
-        */
+        //Search Product / Vendor / Category
+
         if ($request->filled('search')) {
 
             $search = trim($request->search);
@@ -273,12 +251,8 @@ class AdminController extends Controller
             });
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Stock Filter
-        |--------------------------------------------------------------------------
-        */
+        //Stock Filter
+        
         if ($request->filled('stock')) {
 
             switch ($request->stock) {
@@ -318,11 +292,8 @@ class AdminController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Product Status Filter
-        |--------------------------------------------------------------------------
-        */
+        //Product Status Filter
+
         if ($request->filled('status')) {
 
             if ($request->status === 'active') {
@@ -366,9 +337,8 @@ class AdminController extends Controller
     }
 
 
-    /**
-     * Orders Management
-     */
+    //Orders Management
+
     public function orders(Request $request)
     {
         $query = Order::with([
@@ -379,11 +349,8 @@ class AdminController extends Controller
         ]);
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Search Order Number / Customer
-        |--------------------------------------------------------------------------
-        */
+        //Search Order Number / Customer
+
         if ($request->filled('search')) {
 
             $search = trim($request->search);
@@ -415,12 +382,8 @@ class AdminController extends Controller
             });
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Order Status
-        |--------------------------------------------------------------------------
-        */
+        //Order Status
+        
         if ($request->filled('status')) {
 
             $query->where(
@@ -429,12 +392,8 @@ class AdminController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Payment Status
-        |--------------------------------------------------------------------------
-        */
+        //Payment Status
+        
         if ($request->filled('payment')) {
 
             $query->where(
@@ -455,9 +414,8 @@ class AdminController extends Controller
     }
 
 
-    /**
- * Delivery Assignments Management
- */
+    //Delivery Assignments Management
+
 public function deliveryAssignments(Request $request)
 {
     $query = DeliveryAssignment::with([
@@ -465,11 +423,8 @@ public function deliveryAssignments(Request $request)
         'deliveryBoy.user',
     ]);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Search Order / Customer / Delivery Boy
-    |--------------------------------------------------------------------------
-    */
+   //Search Order / Customer / Delivery Boy
+
     if ($request->filled('search')) {
 
         $search = trim($request->search);
@@ -477,6 +432,7 @@ public function deliveryAssignments(Request $request)
         $query->where(function ($q) use ($search) {
 
             // Order number or customer
+
             $q->whereHas('order', function ($orderQuery) use ($search) {
 
                 $orderQuery
@@ -493,6 +449,7 @@ public function deliveryAssignments(Request $request)
 
 
             // Delivery boy name or email
+
             $q->orWhereHas(
                 'deliveryBoy.user',
                 function ($userQuery) use ($search) {
@@ -508,11 +465,8 @@ public function deliveryAssignments(Request $request)
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Delivery Status Filter
-    |--------------------------------------------------------------------------
-    */
+    //Delivery Status Filter
+
     if ($request->filled('status')) {
 
         $query->where(
@@ -522,24 +476,14 @@ public function deliveryAssignments(Request $request)
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Assignment Records
-    |--------------------------------------------------------------------------
-    */
+    //Assignment Records
+
     $assignments = $query
         ->latest()
         ->get();
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Delivery Summary Counters
-    |--------------------------------------------------------------------------
-    | These counters always show the overall system status,
-    | not the currently filtered table results.
-    |--------------------------------------------------------------------------
-    */
+    //Delivery Summary Counters
 
     $totalAssignments = DeliveryAssignment::count();
 
@@ -559,11 +503,8 @@ public function deliveryAssignments(Request $request)
     )->count();
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Return View
-    |--------------------------------------------------------------------------
-    */
+    //Return View
+
     return view(
         'admin.delivery-assignments.index',
         compact(
@@ -586,9 +527,9 @@ public function deliveryAssignments(Request $request)
 
     return view('admin.orders.show', compact('order'));
 }
-/**
- * Toggle Vendor Active Status
- */
+
+//Toggle Vendor Active Status
+
 public function toggleVendor(Vendor $vendor)
 {
     $vendor->update([
@@ -603,10 +544,8 @@ public function toggleVendor(Vendor $vendor)
     );
 }
 
+//Toggle Product Active Status
 
-/**
- * Toggle Product Active Status
- */
 public function toggleProduct(Product $product)
 {
     $product->update([
@@ -622,9 +561,8 @@ public function toggleProduct(Product $product)
 }
 
 
-/**
- * Toggle Product Availability
- */
+//Toggle Product Availability
+
 public function toggleProductAvailability(Product $product)
 {
     $product->update([
@@ -639,12 +577,10 @@ public function toggleProductAvailability(Product $product)
     );
 }
 
-/**
- * Block / Unblock User
- */
+//Block / Unblock User
+
 public function toggleUser(User $user)
 {
-    // Admin account ko block nahi karne dena
     if ($user->role === 'admin') {
         return back()->with(
             'error',

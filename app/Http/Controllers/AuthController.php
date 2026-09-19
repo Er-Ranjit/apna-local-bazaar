@@ -54,6 +54,7 @@ class AuthController extends Controller
         ]);
 
         // Remember Me checkbox
+        
         $remember = $request->boolean('remember');
 
         if (!Auth::attempt($credentials, $remember)) {

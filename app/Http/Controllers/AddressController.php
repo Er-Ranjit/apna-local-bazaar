@@ -56,6 +56,7 @@ class AddressController extends Controller
         ]);
 
         // Sync latest saved address location to users table
+        
         auth()->user()->update([
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,

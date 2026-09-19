@@ -8,6 +8,56 @@
     <title>Order #{{ $order->order_number }} - Apna Local Bazaar</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <style>
+    .delivery-vehicle-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        line-height: 1;
+        animation: deliveryVehicleBounce 1s ease-in-out infinite;
+        filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+    }
+
+    @keyframes deliveryVehicleBounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-4px);
+        }
+    }
+
+    .delivery-vehicle-pulse {
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.18);
+        animation: deliveryPulse 1.6s ease-out infinite;
+    }
+
+    @keyframes deliveryPulse {
+        0% {
+            transform: scale(0.7);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1.7);
+            opacity: 0;
+        }
+    }
+</style>
 </head>
 
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
@@ -252,6 +302,66 @@
                 </div>
 
             </div>
+
+
+
+            {{-- LIVE DELIVERY MAP --}}
+            @if(
+                $order->deliveryAssignment &&
+                in_array($order->deliveryAssignment->status, [
+                    'picked_up',
+                    'out_for_delivery'
+                ])
+            )
+
+                <div class="mb-7 overflow-hidden rounded-2xl border border-emerald-100 bg-white">
+
+                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 sm:px-5">
+
+                        <div>
+
+                            <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-600">
+                                Live Delivery
+                            </p>
+
+                            <h3 class="mt-1 text-base font-bold text-slate-900">
+                                Delivery Boy Location
+                            </h3>
+
+                        </div>
+
+                        <span
+                            id="trackingStatus"
+                            class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1.5 text-[10px] font-bold text-amber-700"
+                        >
+                            Connecting...
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="deliveryMap"
+                        class="h-80 w-full sm:h-96"
+                    ></div>
+
+                    <div class="flex items-center justify-between gap-3 border-t border-slate-100 px-4 py-3 sm:px-5">
+
+                        <p
+                            id="trackingLastUpdated"
+                            class="text-[11px] text-slate-400"
+                        >
+                            Waiting for location...
+                        </p>
+
+                        <span class="text-[11px] font-semibold text-slate-500">
+                            Updates automatically
+                        </span>
+
+                    </div>
+
+                </div>
+
+            @endif
 
             <div class="relative">
 
@@ -768,18 +878,696 @@
 
 </footer>
 
-@if($order->status !== 'delivered')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const refreshTimer = setInterval(() => {
-                window.location.reload();
-            }, 15000);
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
 
-            window.addEventListener('beforeunload', () => {
-                clearInterval(refreshTimer);
+@if(
+    $order->deliveryAssignment &&
+    in_array($order->deliveryAssignment->status, [
+        'picked_up',
+        'out_for_delivery'
+    ])
+)
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const mapElement = document.getElementById('deliveryMap');
+    const statusElement = document.getElementById('trackingStatus');
+    const updatedElement = document.getElementById('trackingLastUpdated');
+
+    if (!mapElement || typeof L === 'undefined') {
+        return;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMER DESTINATION
+    |--------------------------------------------------------------------------
+    */
+
+    const customerLocation = {
+        latitude: 30.7280996,
+        longitude: 76.6961219
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MAP
+    |--------------------------------------------------------------------------
+    */
+
+    const map = L.map('deliveryMap')
+        .setView([20.5937, 78.9629], 5);
+
+
+    L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(map);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MARKERS + ROUTE
+    |--------------------------------------------------------------------------
+    */
+
+    let deliveryMarker = null;
+    let customerMarker = null;
+    let routeLayer = null;
+
+    let hasCenteredMap = false;
+    let lastRouteLocation = null;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    function setTrackingStatus(text, type) {
+
+        if (!statusElement) {
+            return;
+        }
+
+        statusElement.textContent = text;
+
+        statusElement.className =
+            'inline-flex items-center rounded-full px-3 py-1.5 text-[10px] font-bold ' +
+            (
+                type === 'live'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : type === 'error'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-amber-50 text-amber-700'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMER MARKER
+    |--------------------------------------------------------------------------
+    */
+
+    function showCustomerMarker() {
+
+        if (customerMarker) {
+            return;
+        }
+
+        const customerPosition = [
+            customerLocation.latitude,
+            customerLocation.longitude
+        ];
+
+        customerMarker = L.marker(customerPosition)
+            .addTo(map)
+            .bindPopup('📦 Customer');
+
+
+        customerMarker.openPopup();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTANCE CHECK
+    |--------------------------------------------------------------------------
+    */
+
+    function distanceBetweenPoints(
+        latitude1,
+        longitude1,
+        latitude2,
+        longitude2
+    ) {
+
+        const earthRadius = 6371000;
+
+        const lat1 = latitude1 * Math.PI / 180;
+        const lat2 = latitude2 * Math.PI / 180;
+
+        const deltaLat =
+            (latitude2 - latitude1) * Math.PI / 180;
+
+        const deltaLon =
+            (longitude2 - longitude1) * Math.PI / 180;
+
+        const a =
+            Math.sin(deltaLat / 2) *
+            Math.sin(deltaLat / 2) +
+            Math.cos(lat1) *
+            Math.cos(lat2) *
+            Math.sin(deltaLon / 2) *
+            Math.sin(deltaLon / 2);
+
+        const c =
+            2 * Math.atan2(
+                Math.sqrt(a),
+                Math.sqrt(1 - a)
+            );
+
+        return earthRadius * c;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DRAW ROAD ROUTE
+    |--------------------------------------------------------------------------
+    */
+
+    async function drawRoute(
+        deliveryLatitude,
+        deliveryLongitude
+    ) {
+
+        try {
+
+            const destinationLatitude =
+                customerLocation.latitude;
+
+            const destinationLongitude =
+                customerLocation.longitude;
+
+
+            const routeUrl =
+                'https://router.project-osrm.org/route/v1/driving/' +
+                deliveryLongitude +
+                ',' +
+                deliveryLatitude +
+                ';' +
+                destinationLongitude +
+                ',' +
+                destinationLatitude +
+                '?overview=full&geometries=geojson';
+
+
+            const response = await fetch(routeUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
             });
-        });
-    </script>
+
+
+            const data = await response.json();
+
+
+            if (
+                !response.ok ||
+                data.code !== 'Ok' ||
+                !data.routes ||
+                !data.routes.length
+            ) {
+
+                console.warn(
+                    'Unable to calculate delivery route.'
+                );
+
+                return;
+            }
+
+
+            const route = data.routes[0];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | REMOVE OLD ROUTE
+            |--------------------------------------------------------------------------
+            */
+
+            if (routeLayer) {
+                map.removeLayer(routeLayer);
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | DRAW NEW ROUTE
+            |--------------------------------------------------------------------------
+            */
+
+            routeLayer = L.geoJSON(
+                route.geometry,
+                {
+                    style: {
+                        weight: 6,
+                        opacity: 0.85
+                    }
+                }
+            ).addTo(map);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ROUTE INFO
+            |--------------------------------------------------------------------------
+            */
+
+            const distanceKm =
+                Number(route.distance) / 1000;
+
+            const durationMinutes =
+                Math.round(
+                    Number(route.duration) / 60
+                );
+
+
+            if (updatedElement) {
+
+                updatedElement.textContent =
+                    'Route: ' +
+                    distanceKm.toFixed(1) +
+                    ' km • About ' +
+                    durationMinutes +
+                    ' min';
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FIT BOTH MARKERS + ROUTE
+            |--------------------------------------------------------------------------
+            */
+
+            if (!hasCenteredMap) {
+
+                const bounds =
+                    routeLayer.getBounds();
+
+                if (bounds.isValid()) {
+
+                    map.fitBounds(
+                        bounds,
+                        {
+                            padding: [40, 40]
+                        }
+                    );
+                }
+
+                hasCenteredMap = true;
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Route calculation error:',
+                error
+            );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELIVERY MARKER UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    function updateDeliveryMarker(location) {
+
+        const latitude =
+            Number(location.latitude);
+
+        const longitude =
+            Number(location.longitude);
+
+
+        if (
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude)
+        ) {
+            return;
+        }
+
+
+        const position = [
+            latitude,
+            longitude
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELIVERY BOY MARKER
+        |--------------------------------------------------------------------------
+        */
+
+        if (!deliveryMarker) {
+
+    const vehicleIcon = L.divIcon({
+        className: '',
+        html: `
+            <div style="position: relative; width: 44px; height: 44px;">
+                <div class="delivery-vehicle-pulse"></div>
+
+                <div class="delivery-vehicle-icon"
+                     style="position: relative; z-index: 2;">
+                    🚚
+                </div>
+            </div>
+        `,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+        popupAnchor: [0, -22]
+    });
+
+    deliveryMarker = L.marker(
+        position,
+        {
+            icon: vehicleIcon
+        }
+    )
+        .addTo(map)
+        .bindPopup('🚚 Delivery Boy');
+
+} else {
+
+    /*
+    |--------------------------------------------------------------------------
+    | SMOOTH VEHICLE MOVEMENT
+    |--------------------------------------------------------------------------
+    */
+
+    const startPosition =
+        deliveryMarker.getLatLng();
+
+    const startLat =
+        startPosition.lat;
+
+    const startLng =
+        startPosition.lng;
+
+    const endLat =
+        latitude;
+
+    const endLng =
+        longitude;
+
+    const animationDuration = 1200;
+
+    const animationStart =
+        performance.now();
+
+    function animateVehicle(currentTime) {
+
+        const elapsed =
+            currentTime - animationStart;
+
+        const progress =
+            Math.min(
+                elapsed / animationDuration,
+                1
+            );
+
+        /*
+        | Smooth ease-in-out
+        */
+
+        const easedProgress =
+            progress < 0.5
+                ? 2 * progress * progress
+                : 1 - Math.pow(
+                    -2 * progress + 2,
+                    2
+                ) / 2;
+
+        const currentLat =
+            startLat +
+            (endLat - startLat) *
+            easedProgress;
+
+        const currentLng =
+            startLng +
+            (endLng - startLng) *
+            easedProgress;
+
+        deliveryMarker.setLatLng([
+            currentLat,
+            currentLng
+        ]);
+
+        if (progress < 1) {
+
+            requestAnimationFrame(
+                animateVehicle
+            );
+
+        }
+    }
+
+    requestAnimationFrame(
+        animateVehicle
+    );
+}
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMER MARKER
+        |--------------------------------------------------------------------------
+        */
+
+        showCustomerMarker();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LIVE STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        setTrackingStatus(
+            '● Live',
+            'live'
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LAST GPS UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+        if (updatedElement) {
+
+            if (location.recorded_at) {
+
+                updatedElement.textContent =
+                    'Last GPS update: ' +
+                    new Date(
+                        location.recorded_at
+                    ).toLocaleTimeString();
+
+            } else {
+
+                updatedElement.textContent =
+                    'Location updated just now';
+            }
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROUTE UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+        let shouldUpdateRoute = false;
+
+
+        if (!lastRouteLocation) {
+
+            shouldUpdateRoute = true;
+
+        } else {
+
+            const movedDistance =
+                distanceBetweenPoints(
+                    lastRouteLocation.latitude,
+                    lastRouteLocation.longitude,
+                    latitude,
+                    longitude
+                );
+
+
+            /*
+            | Recalculate route after delivery boy
+            | moves at least 20 meters.
+            */
+
+            if (movedDistance >= 20) {
+                shouldUpdateRoute = true;
+            }
+        }
+
+
+        if (shouldUpdateRoute) {
+
+            lastRouteLocation = {
+                latitude: latitude,
+                longitude: longitude
+            };
+
+            drawRoute(
+                latitude,
+                longitude
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIRST VIEW
+        |--------------------------------------------------------------------------
+        */
+
+        if (!hasCenteredMap) {
+
+            map.setView(
+                position,
+                15
+            );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FETCH DELIVERY LOCATION
+    |--------------------------------------------------------------------------
+    */
+
+    async function fetchLocation() {
+
+        try {
+
+            const response = await fetch(
+                '{{ route('orders.tracking.location', $order->id) }}',
+                {
+                    method: 'GET',
+
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+
+                    cache: 'no-store'
+                }
+            );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                response.ok &&
+                data.success &&
+                data.location
+            ) {
+
+                updateDeliveryMarker(
+                    data.location
+                );
+
+                return;
+            }
+
+
+            setTrackingStatus(
+                'Waiting for GPS',
+                'waiting'
+            );
+
+
+            if (updatedElement) {
+
+                updatedElement.textContent =
+                    data.message ||
+                    'Delivery location is not available yet.';
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                'Tracking error:',
+                error
+            );
+
+
+            setTrackingStatus(
+                'Connection error',
+                'error'
+            );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | START
+    |--------------------------------------------------------------------------
+    */
+
+    showCustomerMarker();
+
+    fetchLocation();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO UPDATE EVERY 5 SECONDS
+    |--------------------------------------------------------------------------
+    */
+
+    const trackingTimer =
+        setInterval(
+            fetchLocation,
+            5000
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLEANUP
+    |--------------------------------------------------------------------------
+    */
+
+    window.addEventListener(
+        'beforeunload',
+        function () {
+
+            clearInterval(
+                trackingTimer
+            );
+        }
+    );
+
+
+    setTimeout(
+        function () {
+            map.invalidateSize();
+        },
+        300
+    );
+
+});
+</script>
+
 @endif
 
 </body>

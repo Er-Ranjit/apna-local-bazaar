@@ -4,17 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Apna Local Bazaar</title>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="bg-[#f7faf8] text-slate-900 antialiased">
 
 @php
     $categoryOrder = [
-        'fast-food' => ['🍔', 'Fast Food'],
+        'fast-food' => ['🍔', 'Fast Food'],    
         'fruits-vegetables' => ['🍎', 'Fruits & Vegetables'],
         'kirana' => ['🛍️', 'Grocery'],
         'dairy-products' => ['🥛', 'Dairy Products'],
@@ -28,17 +26,10 @@
 
     $cartCount = $cartCount ?? 0;
 @endphp
+<header class="sticky top-0 z-50 border-b border-slate-200 bg-white">
 
-
-{{-- =========================================================
-    HEADER
-========================================================= --}}
-<header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/95 backdrop-blur-xl">
-
-    <div class="mx-auto flex min-h-[70px] max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:min-h-[82px] lg:gap-5 lg:px-8">
-
-        {{-- Mobile Menu --}}
-        <button
+    <div class="mx-auto flex min-h-[70px] max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:min-h-[76px] lg:gap-5 lg:px-8">
+<button
             type="button"
             id="mobileMenuButton"
             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl text-slate-700 transition hover:bg-emerald-50 lg:hidden"
@@ -46,23 +37,17 @@
         >
             ☰
         </button>
-
-
-        {{-- Logo --}}
-        <a
+<a
             href="{{ route('home') }}"
             class="shrink-0"
         >
             <img
                 src="{{ asset('images/logo.png') }}"
                 alt="Apna Local Bazaar"
-                class="h-9 w-auto object-contain sm:h-10 lg:h-14"
+                class="h-9 w-auto object-contain sm:h-10 lg:h-12"
             >
         </a>
-
-
-        {{-- Desktop Location --}}
-        <button
+<button
             type="button"
             class="customer-location-button hidden shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-emerald-50 lg:flex"
         >
@@ -86,10 +71,7 @@
                 </p>
             </div>
         </button>
-
-
-        {{-- Mobile Location --}}
-        <button
+<button
             type="button"
             class="customer-location-button ml-auto flex items-center gap-1.5 rounded-xl px-2 py-2 transition hover:bg-emerald-50 lg:hidden"
         >
@@ -110,11 +92,8 @@
                 ⌄
             </span>
         </button>
-
-
-        {{-- Desktop Search --}}
-        <div
-            class="relative hidden h-14 min-w-0 flex-1 items-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-100 lg:flex"
+<div
+            class="relative hidden h-12 min-w-0 flex-1 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-emerald-500 focus-within:bg-white lg:flex"
         >
 
             <img
@@ -134,17 +113,14 @@
             <button
                 type="button"
                 id="desktopSearchButton"
-                class="mr-1.5 flex h-11 w-14 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white transition hover:bg-emerald-700"
+                class="mr-1.5 flex h-10 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
                 aria-label="Search"
             >
                 ⌕
             </button>
 
         </div>
-
-
-        {{-- Cart --}}
-        <a
+<a
             href="{{ auth()->check() ? route('cart.index') : route('login') }}"
             class="relative hidden shrink-0 rounded-xl p-3 transition hover:bg-emerald-50 lg:block"
         >
@@ -161,10 +137,7 @@
                 {{ $cartCount }}
             </span>
         </a>
-
-
-        {{-- Account --}}
-        @auth
+@auth
 
             <details class="relative hidden shrink-0 lg:block">
 
@@ -258,10 +231,7 @@
         @endauth
 
     </div>
-
-
-    {{-- Mobile Search --}}
-    <div class="border-t border-slate-100 px-4 pb-3 lg:hidden">
+<div class="border-t border-slate-100 px-4 pb-3 lg:hidden">
 
         <div class="flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm focus-within:border-emerald-500 focus-within:bg-white">
 
@@ -293,11 +263,6 @@
     </div>
 
 </header>
-
-
-{{-- =========================================================
-    MOBILE MENU
-========================================================= --}}
 <div
     id="mobileMenu"
     class="fixed inset-0 z-[60] hidden lg:hidden"
@@ -422,22 +387,9 @@
     </div>
 
 </div>
-
-
-{{-- =========================================================
-    MAIN
-========================================================= --}}
-<main class="mx-auto max-w-[1440px] px-4 py-4 pb-24 sm:px-6 sm:py-6 lg:px-8">
-
-
-    {{-- =====================================================
-        DESKTOP HERO + CATEGORIES
-    ====================================================== --}}
-    <section class="hidden gap-6 lg:grid lg:grid-cols-[245px_minmax(0,1fr)]">
-
-
-        {{-- Categories --}}
-        <aside class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<main class="mx-auto max-w-[1440px] px-4 py-4 pb-40 sm:px-6 sm:py-6 lg:px-8">
+<section class="hidden gap-6 lg:grid lg:grid-cols-[245px_minmax(0,1fr)]">
+<aside class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
             <div class="flex items-center gap-3 bg-emerald-600 px-5 py-4 text-white">
 
@@ -511,12 +463,9 @@
             </a>
 
         </aside>
-
-
-        {{-- HERO --}}
-        <div
+<div
             id="heroSliderDesktop"
-            class="relative h-[360px] overflow-hidden rounded-2xl shadow-sm"
+            class="relative h-[340px] overflow-hidden rounded-2xl border border-slate-200 shadow-sm"
         >
 
             <div class="hero-slide-desktop absolute inset-0 opacity-100 transition-opacity duration-700">
@@ -555,29 +504,29 @@
             <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent"></div>
 
 
-            <div class="relative z-10 flex h-full max-w-[630px] flex-col justify-center px-10 xl:px-12">
+            <div class="relative z-10 flex h-full max-w-[620px] flex-col justify-center px-8 sm:px-10 xl:px-12">
 
                 <span class="w-fit rounded-full bg-white/85 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 backdrop-blur">
                     Apna Local Bazaar
                 </span>
 
-                <h1 class="mt-4 text-4xl font-black leading-[1.08] text-slate-950 xl:text-[44px]">
+                <h1 class="mt-4 text-4xl font-black leading-tight text-slate-950 xl:text-[42px]">
 
-                    Everything Local.
+                    Local products.
 
                     <span class="block text-emerald-600">
-                        Delivered Fresh.
+                        Simple shopping.
                     </span>
 
                 </h1>
 
-                <p class="mt-4 max-w-lg text-sm font-medium leading-6 text-slate-700 xl:text-base">
-                    Fresh groceries, local favourites and everyday essentials delivered straight to your doorstep.
+                <p class="mt-4 max-w-lg text-sm leading-6 text-slate-700 xl:text-base">
+                    Shop from nearby sellers and get the things you need without the extra hassle.
                 </p>
 
                 <a
                     href="#desktopProducts"
-                    class="mt-6 inline-flex w-fit items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-bold text-white shadow-lg shadow-emerald-900/10 transition hover:bg-emerald-700"
+                    class="mt-6 inline-flex w-fit items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-bold text-white transition hover:bg-emerald-700"
                 >
                     Shop Now
 
@@ -637,12 +586,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        MOBILE HERO
-    ====================================================== --}}
-    <section class="lg:hidden">
+<section class="lg:hidden">
 
         <div
             id="heroSliderMobile"
@@ -693,10 +637,10 @@
 
                 <h1 class="mt-2 text-2xl font-black leading-[1.08] text-slate-950 sm:text-3xl">
 
-                    Everything Local.
+                    Local products.
 
                     <span class="block text-emerald-600">
-                        Delivered Fresh.
+                        Simple shopping.
                     </span>
 
                 </h1>
@@ -752,12 +696,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        MOBILE CATEGORIES
-    ====================================================== --}}
-    <section
+<section
         id="mobileCategories"
         class="mt-6 lg:hidden"
     >
@@ -824,12 +763,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        MOBILE CATEGORY FILTERS
-    ====================================================== --}}
-    <section
+<section
         class="mt-7 lg:hidden"
         id="mobileCategoryFilters"
     >
@@ -887,12 +821,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        MOBILE LOCAL SHOPS
-    ====================================================== --}}
-    <section class="mt-7 lg:hidden">
+<section class="mt-7 lg:hidden">
 
         <div class="mb-3 flex items-end justify-between">
 
@@ -963,9 +892,7 @@
                                     ★ 4.5
                                 </span>
 
-                                <span class="text-slate-500">
-                                    20–30 min
-                                </span>
+                                <span class="text-slate-500">Local shop</span>
 
                             </div>
 
@@ -975,7 +902,7 @@
 
 
                     <div class="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-semibold text-emerald-700">
-                        Free delivery above ₹199
+                        Local delivery available
                     </div>
 
                 </div>
@@ -991,12 +918,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        DESKTOP FEATURES
-    ====================================================== --}}
-    <section class="relative z-20 mx-auto ml-70 -mt-[120px] hidden max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:block">
+<section class="mt-5 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:block">
 
         <div class="grid grid-cols-4">
 
@@ -1038,315 +960,137 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        DESKTOP PRODUCTS
-    ====================================================== --}}
-    <section
-        id="desktopProducts"
-        class="mt-18 hidden scroll-mt-24 items-start gap-6 lg:grid lg:grid-cols-[235px_minmax(0,1fr)_330px]"
-    >
-
-
-        {{-- OFFER --}}
-        <div
-            class="h-fit self-start rounded-2xl border border-amber-100 bg-gradient-to-b from-amber-50 to-orange-50 p-5"
-        >
-
-            <span class="inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
-                Special Offer
-            </span>
-
-            <p class="mt-4 text-lg font-extrabold">
-                First Order?
-            </p>
-
-            <p class="mt-2 text-sm leading-6 text-slate-700">
-                Get an exclusive discount on your first purchase.
-            </p>
-
-            <p class="mt-5 text-3xl font-black text-orange-500">
-                10%
-
-                <span class="text-lg">
-                    OFF
-                </span>
-            </p>
-
-            <p class="mt-2 text-xs text-slate-600">
-                Coupon Code:
-                <b>FIRST10</b>
-            </p>
-
-            <a
-                href="#desktopProducts"
-                class="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700"
-            >
-                Shop Now
-            </a>
-
+<section id="desktopProducts" class="mt-12 hidden lg:block scroll-mt-28">
+        <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+            <div class="flex items-center justify-between gap-5">
+                <div class="flex min-w-0 items-center gap-4">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm ring-1 ring-slate-200">🎁</div>
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-black uppercase tracking-[0.18em] text-orange-600">First order offer</p>
+                        <h3 class="mt-1 text-lg font-black text-slate-950 sm:text-xl">Get 10% OFF on your first purchase</h3>
+                        <p class="mt-1 text-sm text-slate-500">Use coupon code <span class="font-extrabold text-emerald-700">FIRST10</span></p>
+                    </div>
+                </div>
+                <a href="#desktopProductGrid" class="hidden shrink-0 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-emerald-700 xl:inline-flex">Shop Now →</a>
+            </div>
         </div>
 
-
-        {{-- PRODUCT LIST --}}
-        <div class="min-w-0">
-
-            <div class="mb-4 flex items-end justify-between">
-
-                <div>
-
-                    <h2 class="text-2xl font-extrabold">
-                        Popular Products
-                    </h2>
-
-                    <p
-                        id="desktopSearchMessage"
-                        class="mt-1 hidden text-xs font-medium text-emerald-700"
-                    ></p>
-
-                    <p
-                        id="desktopCategoryMessage"
-                        class="mt-1 hidden text-xs font-medium text-emerald-700"
-                    ></p>
-
+        <div class="mt-10 flex items-end justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-xl">🛍️</div>
+                    <div>
+                        <h2 class="text-2xl font-black tracking-tight text-slate-950 xl:text-3xl">Popular Products</h2>
+                        <p class="mt-1 text-sm text-slate-500">Popular products from nearby shops</p>
+                    </div>
                 </div>
-
-
-                <button
-                    type="button"
-                    id="desktopResetProducts"
-                    class="hidden text-sm font-bold text-emerald-700"
-                >
-                    Show All →
-                </button>
-
+                <p id="desktopSearchMessage" class="mt-2 hidden text-xs font-bold text-emerald-700"></p>
+                <p id="desktopCategoryMessage" class="mt-2 hidden text-xs font-bold text-emerald-700"></p>
             </div>
+            <button type="button" id="desktopResetProducts" class="hidden text-sm font-extrabold text-emerald-700 hover:text-emerald-800">Show All →</button>
+        </div>
 
-
-            <div
-                id="desktopProductGrid"
-                class="grid grid-cols-3 items-start gap-3 xl:grid-cols-5"
-            >
-
-                @forelse($products as $product)
-
-                    <div
-                        class="product-card group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-100 hover:shadow-lg"
-                        data-name="{{ strtolower($product->name) }}"
-                        data-category="{{ strtolower($product->category?->name ?? '') }}"
-                    >
-
-                        <a
-                            href="{{ route('product.show', $product->slug) }}"
-                            class="block"
-                        >
-
-                            <div class="flex h-32 items-center justify-center overflow-hidden bg-white p-3">
-
-                                @if(!empty($product->image))
-
-                                    <img
-                                        src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
-                                        alt="{{ $product->name }}"
-                                        class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
-                                        onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
-                                    >
-
-                                @else
-
-                                    <img
-                                        src="{{ asset('images/products/product-placeholder.png') }}"
-                                        alt="{{ $product->name }}"
-                                        class="h-24 w-24 object-contain"
-                                    >
-
-                                @endif
-
+        <div id="desktopProductGrid" class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5">
+            @forelse($products as $product)
+                @php
+                    $hasDiscount = $product->discount_price && $product->discount_price < $product->price;
+                    $discountPercent = $hasDiscount ? round((($product->price - $product->discount_price) / $product->price) * 100) : 0;
+                @endphp
+                <article class="product-card group flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md" data-name="{{ strtolower($product->name) }}" data-category="{{ strtolower($product->category?->name ?? '') }}">
+                    <div class="relative p-2.5">
+                        @if($hasDiscount)
+                            <span class="absolute left-4 top-4 z-10 rounded-full bg-emerald-600 px-3 py-1.5 text-[10px] font-black text-white shadow-sm">{{ $discountPercent }}% OFF</span>
+                        @endif
+                        <button type="button" class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-lg text-slate-400 shadow-sm transition hover:text-rose-500" aria-label="Wishlist">♡</button>
+                        <a href="{{ route('product.show', $product->slug) }}" class="block">
+                            <div class="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-slate-50 px-4 py-4">
+                                <img src="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}" alt="{{ $product->name }}" class="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';">
                             </div>
-
                         </a>
+                    </div>
 
+                    <div class="flex flex-1 flex-col px-4 pb-4 pt-1">
+                        <div>
+                            <span class="inline-flex max-w-full rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">{{ $product->category?->name ?? 'Local Product' }}</span>
+                            <a href="{{ route('product.show', $product->slug) }}" class="mt-2 block min-h-[42px] line-clamp-2 text-[15px] font-extrabold leading-5 text-slate-900 transition hover:text-emerald-700">{{ $product->name }}</a>
+                            <div class="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>In Stock</div>
+                        </div>
 
-                        <div class="p-3">
-
-                            <a
-                                href="{{ route('product.show', $product->slug) }}"
-                                class="block truncate text-sm font-bold text-slate-900 transition hover:text-emerald-700"
-                            >
-                                {{ $product->name }}
-                            </a>
-
-
-                            <p class="mt-1 truncate text-xs text-slate-500">
-                                {{ $product->category?->name ?? 'Local Product' }}
-                            </p>
-
-
-                            <div class="mt-3 flex items-center justify-between gap-2">
-
-                                <div>
-
-                                    <span class="block text-base font-black text-emerald-700">
-                                        ₹{{ number_format($product->discount_price ?? $product->price, 2) }}
-                                    </span>
-
-
-                                    @if($product->discount_price && $product->discount_price < $product->price)
-
-                                        <span class="text-[11px] text-slate-400 line-through">
-                                            ₹{{ number_format($product->price, 2) }}
-                                        </span>
-
-                                    @endif
-
+                        <div class="mt-auto pt-4">
+                            <div class="flex items-end justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                                        <span class="text-xl font-black text-emerald-700">₹{{ number_format($product->discount_price ?? $product->price, 2) }}</span>
+                                        @if($hasDiscount)
+                                            <span class="text-xs font-medium text-slate-400 line-through">₹{{ number_format($product->price, 2) }}</span>
+                                        @endif
+                                    </div>
                                 </div>
-
-
                                 @auth
-
                                     <form
                                         action="{{ route('cart.add', $product) }}"
                                         method="POST"
+                                        class="shrink-0 home-cart-form"
+                                        data-product-id="{{ $product->id }}"
+                                        data-product-name="{{ $product->name }}"
+                                        data-product-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
                                     >
                                         @csrf
 
                                         <button
                                             type="submit"
-                                            class="rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-emerald-700"
+                                            class="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-xl bg-emerald-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-emerald-700 active:scale-95"
                                         >
-                                            + Add
+                                            <span>🛒</span>
+                                            <span class="add-cart-text">Add to Cart</span>
                                         </button>
-
                                     </form>
-
                                 @else
-
-                                    <a
-                                        href="{{ route('login') }}"
-                                        class="rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white"
-                                    >
-                                        + Add
-                                    </a>
-
+                                    <a href="{{ route('login') }}" class="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl bg-emerald-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-emerald-700"><span>🛒</span>Add to Cart</a>
                                 @endauth
-
                             </div>
-
                         </div>
-
                     </div>
-
-                @empty
-
-                    <div class="col-span-full rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
-                        No products available right now.
-                    </div>
-
-                @endforelse
-
-            </div>
-
+                </article>
+            @empty
+                <div class="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-500">No products available right now.</div>
+            @endforelse
         </div>
 
-
-        {{-- DESKTOP SHOPS --}}
-        <div class="self-start">
-
-            <div class="mb-4 flex items-end justify-between">
-
+        <div class="mt-12 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="mb-5 flex items-end justify-between gap-4">
                 <div>
-
-                    <h2 class="text-2xl font-extrabold">
-                        Local Shops
-                    </h2>
-
-                    <p class="mt-1 text-xs text-slate-500">
-                        Trusted local sellers
-                    </p>
-
+                    <p class="text-[11px] font-black uppercase tracking-[0.18em] text-emerald-600">Around you</p>
+                    <h3 class="mt-1 text-2xl font-black text-slate-950">Local Shops</h3>
+                    <p class="mt-1 text-sm text-slate-500">Shops around you</p>
                 </div>
-
-                <span class="text-sm font-bold text-emerald-700">
-                    View All →
-                </span>
-
+                <span class="text-sm font-black text-emerald-700">View All →</span>
             </div>
-
-
-            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
+            <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
                 @forelse($vendors->take(4) as $vendor)
-
-                    <div class="flex items-center gap-3 border-b border-slate-100 p-3 last:border-0">
-
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50">
-
+                    <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-emerald-200 hover:bg-emerald-50/30">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white ring-1 ring-slate-200">
                             @if(!empty($vendor->image))
-
-                                <img
-                                    src="{{ asset('storage/' . ltrim($vendor->image, '/')) }}"
-                                    alt="{{ $vendor->shop_name ?? 'Local Shop' }}"
-                                    class="h-12 w-12 rounded-full object-cover"
-                                    onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';"
-                                >
-
+                                <img src="{{ asset('storage/' . ltrim($vendor->image, '/')) }}" alt="{{ $vendor->shop_name ?? 'Local Shop' }}" class="h-10 w-10 rounded-xl object-cover" onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';">
                             @else
-
-                                <img
-                                    src="{{ asset('images/features/shop.png') }}"
-                                    alt=""
-                                    class="h-8 w-8 object-contain"
-                                >
-
+                                <img src="{{ asset('images/features/shop.png') }}" alt="" class="h-8 w-8 object-contain">
                             @endif
-
                         </div>
-
-
                         <div class="min-w-0 flex-1">
-
-                            <h3 class="truncate text-sm font-bold">
-                                {{ $vendor->shop_name ?? 'Local Shop' }}
-                            </h3>
-
-                            <p class="truncate text-xs text-slate-500">
-                                {{ $vendor->city ?? 'Local Store' }}
-                            </p>
-
-                            <p class="mt-1 text-xs">
-
-                                <span class="text-amber-500">
-                                    ★
-                                </span>
-
-                                4.5
-
-                            </p>
-
+                            <p class="truncate text-sm font-black text-slate-900">{{ $vendor->shop_name ?? 'Local Shop' }}</p>
+                            <p class="truncate text-xs text-slate-500">{{ $vendor->city ?? 'Local Store' }}</p>
+                            <p class="mt-1 text-xs text-slate-500">Local seller</p>
                         </div>
-
+                        <span class="text-slate-400">›</span>
                     </div>
-
                 @empty
-
-                    <div class="p-8 text-center text-sm text-slate-500">
-                        No local shops available.
-                    </div>
-
+                    <div class="col-span-full py-8 text-center text-sm text-slate-500">No local shops available.</div>
                 @endforelse
-
             </div>
-
         </div>
-
     </section>
-
-
-    {{-- =====================================================
-        MOBILE PRODUCTS
-    ====================================================== --}}
-    <section
+<section
         id="mobileProducts"
         class="mt-8 scroll-mt-24 lg:hidden"
     >
@@ -1385,13 +1129,13 @@
 
         <div
             id="mobileProductGrid"
-            class="grid grid-cols-2 gap-3"
+            class="grid grid-cols-2 items-stretch gap-3"
         >
 
             @forelse($products as $product)
 
                 <div
-                    class="product-card-mobile group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                    class="product-card-mobile group relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                     data-name="{{ strtolower($product->name) }}"
                     data-category="{{ strtolower($product->category?->name ?? '') }}"
                 >
@@ -1412,15 +1156,12 @@
                     >
                         ♡
                     </button>
-
-
-                    {{-- Image --}}
-                    <a
+<a
                         href="{{ route('product.show', $product->slug) }}"
                         class="block"
                     >
 
-                        <div class="flex h-36 items-center justify-center overflow-hidden bg-white p-3 sm:h-40">
+                        <div class="flex h-36 shrink-0 items-center justify-center overflow-hidden bg-slate-50 p-3 sm:h-40">
 
                             @if(!empty($product->image))
 
@@ -1446,7 +1187,7 @@
                     </a>
 
 
-                    <div class="p-3">
+                    <div class="flex flex-1 flex-col p-3">
 
                         <a
                             href="{{ route('product.show', $product->slug) }}"
@@ -1461,7 +1202,7 @@
                         </p>
 
 
-                        <div class="mt-3 flex items-end justify-between gap-2">
+                        <div class="mt-auto flex items-end justify-between gap-2 pt-4">
 
                             <div>
 
@@ -1486,15 +1227,21 @@
                                 <form
                                     action="{{ route('cart.add', $product) }}"
                                     method="POST"
+                                    class="home-cart-form"
+                                    data-product-id="{{ $product->id }}"
+                                    data-product-name="{{ $product->name }}"
+                                    data-product-price="{{ $product->discount_price ?? $product->price }}"
+                                    data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
                                 >
                                     @csrf
 
                                     <button
                                         type="submit"
-                                        class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-2xl font-medium text-white shadow-sm transition hover:bg-emerald-700"
+                                        class="inline-flex shrink-0 items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-emerald-700"
                                         aria-label="Add {{ $product->name }} to cart"
                                     >
-                                        +
+                                        🛒
+                                        <span class="add-cart-text">Add</span>
                                     </button>
 
                                 </form>
@@ -1555,12 +1302,51 @@
         </div>
 
     </section>
+<section class="mt-8">
+        <div class="flex items-end justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-950 sm:text-3xl">
+                    Shop by Category
+                </h2>
+                <p class="mt-1 text-sm text-slate-500">
+                    Everyday products, all in one place
+                </p>
+            </div>
 
+            <a
+                href="#desktopProducts"
+                class="shrink-0 text-sm font-extrabold text-emerald-700 hover:text-emerald-800"
+            >
+                View Products →
+            </a>
+        </div>
 
-    {{-- =====================================================
-        MOBILE BENEFITS
-    ====================================================== --}}
-    <section class="mt-8 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:hidden">
+        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            @foreach($categoryOrder as $slug => $meta)
+                @php($category = $categoryMap->get($slug))
+                @if($category)
+                    <a
+                        href="{{ route('category', $category->slug) }}"
+                        class="group rounded-xl border border-slate-200 bg-white p-3 text-center transition hover:border-emerald-200 hover:bg-emerald-50/30"
+                    >
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 transition group-hover:bg-emerald-100">
+                            <img
+                                src="{{ asset('images/categories/' . $category->slug . '.png') }}"
+                                alt="{{ $category->name }}"
+                                class="h-11 w-11 object-contain"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+                            >
+                            <span class="hidden text-2xl">{{ $meta[0] }}</span>
+                        </div>
+                        <p class="mt-2 line-clamp-2 text-xs font-bold text-slate-700 group-hover:text-emerald-700">
+                            {{ $category->name }}
+                        </p>
+                    </a>
+                @endif
+            @endforeach
+        </div>
+    </section>
+<section class="mt-8 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:hidden">
 
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
 
@@ -1602,12 +1388,7 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        DESKTOP APP STRIP
-    ====================================================== --}}
-    <section class="mt-7 hidden grid-cols-3 items-center gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:grid lg:px-8">
+<section class="mt-7 hidden grid-cols-3 items-center gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:grid lg:px-8">
 
         <div class="flex items-center gap-3">
 
@@ -1622,7 +1403,7 @@
                 </p>
 
                 <p class="text-xs text-slate-500">
-                    A better shopping experience is coming soon.
+                    We are working on the app.
                 </p>
 
             </div>
@@ -1651,7 +1432,7 @@
                 </p>
 
                 <p class="text-xs text-slate-500">
-                    Our support team is here for you.
+                    Need help with your order?
                 </p>
 
             </div>
@@ -1659,15 +1440,10 @@
         </div>
 
     </section>
-
-
-    {{-- =====================================================
-        WHY CHOOSE US
-    ====================================================== --}}
-    <section class="mt-8 hidden lg:block">
+<section class="mt-8 hidden lg:block">
 
         <h2 class="text-2xl font-extrabold">
-            Why Choose Apna Local Bazaar?
+            Why shop with us?
         </h2>
 
 
@@ -1680,7 +1456,7 @@
                 ['images/features/payment.png', 'Secure Payment', 'Simple and reliable checkout'],
             ] as $item)
 
-                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 
                     <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50">
 
@@ -1712,13 +1488,57 @@
 
     </section>
 
-</main>
-
-
 {{-- =========================================================
-    DESKTOP FOOTER
+    HOME QUICK CART
 ========================================================= --}}
-<footer class="mt-12 hidden border-t border-slate-200 bg-slate-950 text-white lg:block">
+
+@auth
+
+<div
+    id="homeQuickCart"
+    class="fixed inset-x-0 bottom-[68px] z-[55] hidden lg:bottom-0"
+>
+    <div class="mx-auto max-w-[1440px] px-2 pb-2 sm:px-4 lg:px-8 lg:pb-3">
+
+        {{-- SELECTED PRODUCTS --}}
+        <div
+            id="homeQuickCartProducts"
+            class="mb-2 flex gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-lg backdrop-blur-xl"
+        ></div>
+
+        {{-- CART SUMMARY --}}
+        <div class="flex items-center gap-3 rounded-2xl bg-emerald-600 px-3 py-2.5 text-white shadow-[0_8px_30px_rgba(16,185,129,0.30)] sm:px-4 sm:py-3">
+
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl sm:h-11 sm:w-11">
+                🛒
+            </div>
+
+            <div class="min-w-0 flex-1">
+                <p id="homeQuickCartCount" class="text-xs font-black sm:text-sm">
+                    0 items
+                </p>
+
+                <p id="homeQuickCartTotal" class="mt-0.5 text-sm font-black sm:text-base">
+                    ₹0.00
+                </p>
+            </div>
+
+            <a
+                href="{{ route('cart.index') }}"
+                class="flex shrink-0 items-center gap-1 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-emerald-700 shadow-sm transition hover:bg-emerald-50 active:scale-95 sm:px-5 sm:text-sm"
+            >
+                View Cart
+                <span class="text-base">→</span>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+@endauth
+
+</main>
+<footer class="mt-10 hidden border-t border-slate-200 bg-slate-950 text-white lg:block">
 
     <div class="mx-auto grid max-w-[1440px] gap-8 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
 
@@ -1731,7 +1551,7 @@
             >
 
             <p class="mt-4 text-sm leading-6 text-slate-400">
-                Your trusted digital marketplace for local shops, groceries and everyday essentials.
+                A simple place to buy everyday products from local shops.
             </p>
 
         </div>
@@ -1803,7 +1623,7 @@
             </h3>
 
             <p class="mt-4 text-sm text-slate-400">
-                Android and iOS app coming soon.
+                App is coming soon.
             </p>
 
             <button
@@ -1823,11 +1643,6 @@
     </div>
 
 </footer>
-
-
-{{-- =========================================================
-    MOBILE BOTTOM NAVIGATION
-========================================================= --}}
 <nav class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-2 pt-2 shadow-[0_-6px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl lg:hidden">
 
     <div class="mx-auto grid max-w-lg grid-cols-4">
@@ -1939,19 +1754,10 @@
 
 
 <div class="h-20 lg:hidden"></div>
-
-
-{{-- =========================================================
-    JAVASCRIPT
-========================================================= --}}
 <script>
 
 document.addEventListener('DOMContentLoaded', () => {
 
-
-    /* =====================================================
-       CUSTOMER LOCATION
-    ====================================================== */
 
     const locationButtons = document.querySelectorAll(
         '.customer-location-button'
@@ -2105,10 +1911,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    /* =====================================================
-       MOBILE MENU
-    ====================================================== */
-
     const mobileMenu =
         document.getElementById('mobileMenu');
 
@@ -2157,10 +1959,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hideMobileMenu
     );
 
-
-    /* =====================================================
-       DESKTOP SLIDER
-    ====================================================== */
 
     const createDesktopSlider = () => {
 
@@ -2300,10 +2098,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    /* =====================================================
-       MOBILE SLIDER
-    ====================================================== */
-
     const createMobileSlider = () => {
 
         const slides =
@@ -2430,10 +2224,6 @@ document.addEventListener('DOMContentLoaded', () => {
     createMobileSlider();
 
 
-    /* =====================================================
-       PRODUCT ELEMENTS
-    ====================================================== */
-
     const desktopSearch =
         document.getElementById(
             'desktopProductSearch'
@@ -2529,10 +2319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = '';
 
 
-    /* =====================================================
-       SYNC SEARCH INPUTS
-    ====================================================== */
-
     const syncSearchInputs = (value) => {
 
         if (desktopSearch) {
@@ -2545,10 +2331,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-
-    /* =====================================================
-       PRODUCT MATCH
-    ====================================================== */
 
     const matchesProduct = (card) => {
 
@@ -2575,10 +2357,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-
-    /* =====================================================
-       APPLY FILTERS
-    ====================================================== */
 
     const applyFilters = () => {
 
@@ -2617,8 +2395,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
 
-
-        /* Search message */
 
         if (desktopMessage) {
 
@@ -2660,8 +2436,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        /* Category message */
-
         if (currentCategory) {
 
             const label =
@@ -2701,8 +2475,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        /* Empty state */
-
         if (currentSearch || currentCategory) {
 
             mobileReset?.classList.remove('hidden');
@@ -2730,10 +2502,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-
-    /* =====================================================
-       SEARCH
-    ====================================================== */
 
     const searchProducts = (value) => {
 
@@ -2795,10 +2563,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
 
-    /* =====================================================
-       ENTER SEARCH
-    ====================================================== */
-
     [desktopSearch, mobileSearch].forEach((input) => {
 
         input?.addEventListener(
@@ -2818,10 +2582,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-
-    /* =====================================================
-       RESET ALL
-    ====================================================== */
 
     const resetAll = () => {
 
@@ -2907,10 +2667,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
 
-    /* =====================================================
-       CATEGORY CHIPS
-    ====================================================== */
-
     chips.forEach((chip) => {
 
         chip.addEventListener(
@@ -2967,6 +2723,464 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
     });
+
+
+    /* =====================================================
+       HOME QUICK CART
+    ===================================================== */
+
+    const homeCartForms =
+        document.querySelectorAll('.home-cart-form');
+
+    const homeQuickCart =
+        document.getElementById('homeQuickCart');
+
+    const homeQuickCartProducts =
+        document.getElementById('homeQuickCartProducts');
+
+    const homeQuickCartCount =
+        document.getElementById('homeQuickCartCount');
+
+    const homeQuickCartTotal =
+        document.getElementById('homeQuickCartTotal');
+
+    const homeCartStorageKey =
+        'apna_local_bazaar_home_cart_{{ auth()->id() }}';
+
+    let homeSelectedProducts = {};
+
+    try {
+
+        homeSelectedProducts =
+            JSON.parse(
+                localStorage.getItem(
+                    homeCartStorageKey
+                ) || '{}'
+            );
+
+    } catch (error) {
+
+        console.error(
+            'Quick cart load error:',
+            error
+        );
+
+        homeSelectedProducts = {};
+    }
+
+
+    const getHomeCartStats = () => {
+
+        const products =
+            Object.values(
+                homeSelectedProducts
+            );
+
+        const items =
+            products.reduce(
+                (total, product) => {
+
+                    return total +
+                        Number(
+                            product.quantity || 0
+                        );
+
+                },
+                0
+            );
+
+        const total =
+            products.reduce(
+                (sum, product) => {
+
+                    return sum +
+                        (
+                            Number(product.price || 0) *
+                            Number(product.quantity || 0)
+                        );
+
+                },
+                0
+            );
+
+        return {
+            products,
+            items,
+            total
+        };
+    };
+
+
+    const formatHomePrice = (value) => {
+
+        return Number(value || 0)
+            .toLocaleString(
+                'en-IN',
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+    };
+
+
+    const renderHomeQuickCart = () => {
+
+        if (
+            !homeQuickCart ||
+            !homeQuickCartProducts ||
+            !homeQuickCartCount ||
+            !homeQuickCartTotal
+        ) {
+            return;
+        }
+
+        const stats =
+            getHomeCartStats();
+
+        if (!stats.products.length) {
+
+            homeQuickCart.classList.add(
+                'hidden'
+            );
+
+            homeQuickCartProducts.innerHTML =
+                '';
+
+            return;
+        }
+
+        homeQuickCart.classList.remove(
+            'hidden'
+        );
+
+        homeQuickCartCount.textContent =
+            stats.items +
+            (
+                stats.items === 1
+                    ? ' item'
+                    : ' items'
+            );
+
+        homeQuickCartTotal.textContent =
+            '₹' +
+            formatHomePrice(
+                stats.total
+            );
+
+
+        homeQuickCartProducts.innerHTML =
+            stats.products
+                .map((product) => {
+
+                    return `
+                        <div
+                            class="relative flex h-[62px] w-[82px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm"
+                            title="${product.name} • Qty ${product.quantity}"
+                        >
+
+                            <img
+                                src="${product.image}"
+                                alt="${product.name}"
+                                class="h-full w-full object-contain"
+                                onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
+                            >
+
+                            <span
+                                class="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1 text-[9px] font-black text-white shadow-sm"
+                            >
+                                ${product.quantity}
+                            </span>
+
+                        </div>
+                    `;
+
+                })
+                .join('');
+
+
+        localStorage.setItem(
+            homeCartStorageKey,
+            JSON.stringify(
+                homeSelectedProducts
+            )
+        );
+    };
+
+
+    const addHomeCartProduct = (form) => {
+
+        const productId =
+            form.dataset.productId;
+
+        if (!productId) {
+            return;
+        }
+
+        const productName =
+            form.dataset.productName;
+
+        const productPrice =
+            Number(
+                form.dataset.productPrice
+            );
+
+        const productImage =
+            form.dataset.productImage;
+
+
+        if (
+            homeSelectedProducts[productId]
+        ) {
+
+            homeSelectedProducts[
+                productId
+            ].quantity += 1;
+
+        } else {
+
+            homeSelectedProducts[
+                productId
+            ] = {
+
+                id:
+                    productId,
+
+                name:
+                    productName,
+
+                price:
+                    productPrice,
+
+                image:
+                    productImage,
+
+                quantity:
+                    1
+            };
+        }
+
+
+        renderHomeQuickCart();
+    };
+
+
+    homeCartForms.forEach((form) => {
+
+        form.addEventListener(
+            'submit',
+            async (event) => {
+
+                event.preventDefault();
+
+                const button =
+                    form.querySelector(
+                        'button'
+                    );
+
+                const text =
+                    form.querySelector(
+                        '.add-cart-text'
+                    );
+
+
+                if (button) {
+
+                    button.disabled = true;
+
+                    button.classList.add(
+                        'opacity-70',
+                        'cursor-wait'
+                    );
+                }
+
+
+                if (text) {
+
+                    text.textContent =
+                        'Adding...';
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            form.action,
+                            {
+                                method: 'POST',
+
+                                body:
+                                    new FormData(
+                                        form
+                                    ),
+
+                                headers: {
+
+                                    'X-CSRF-TOKEN':
+                                        '{{ csrf_token() }}',
+
+                                    'X-Requested-With':
+                                        'XMLHttpRequest',
+
+                                    'Accept':
+                                        'application/json,text/html'
+                                },
+
+                                credentials:
+                                    'same-origin',
+
+                                redirect:
+                                    'follow'
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            'Cart request failed.'
+                        );
+                    }
+
+
+                    addHomeCartProduct(
+                        form
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Update real header badge
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const desktopCartCount =
+                        document.getElementById(
+                            'desktopCartCount'
+                        );
+
+                    const mobileCartCount =
+                        document.getElementById(
+                            'mobileCartCount'
+                        );
+
+
+                    [
+                        desktopCartCount,
+                        mobileCartCount
+                    ].forEach((badge) => {
+
+                        if (!badge) {
+                            return;
+                        }
+
+                        const current =
+                            Number(
+                                badge.textContent
+                            ) || 0;
+
+                        badge.textContent =
+                            current + 1;
+                    });
+
+
+                    if (text) {
+
+                        text.textContent =
+                            'Added ✓';
+                    }
+
+
+                    if (button) {
+
+                        button.classList.remove(
+                            'bg-emerald-600'
+                        );
+
+                        button.classList.add(
+                            'bg-slate-900'
+                        );
+                    }
+
+
+                    setTimeout(() => {
+
+                        if (text) {
+
+                            text.textContent =
+                                form.closest(
+                                    '#mobileProductGrid'
+                                )
+                                    ? 'Add'
+                                    : 'Add to Cart';
+                        }
+
+
+                        if (button) {
+
+                            button.disabled =
+                                false;
+
+                            button.classList.remove(
+                                'opacity-70',
+                                'cursor-wait',
+                                'bg-slate-900'
+                            );
+
+                            button.classList.add(
+                                'bg-emerald-600'
+                            );
+                        }
+
+                    }, 1000);
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Add to cart error:',
+                        error
+                    );
+
+
+                    if (text) {
+
+                        text.textContent =
+                            'Try Again';
+                    }
+
+
+                    if (button) {
+
+                        button.disabled =
+                            false;
+
+                        button.classList.remove(
+                            'opacity-70',
+                            'cursor-wait'
+                        );
+                    }
+
+
+                    alert(
+                        'Product cart me add nahi ho saka. Please dobara try karo.'
+                    );
+                }
+
+            }
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Restore QUICK CART after refresh
+    |--------------------------------------------------------------------------
+    */
+
+    renderHomeQuickCart();
 
 });
 

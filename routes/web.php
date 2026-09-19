@@ -16,58 +16,61 @@ use App\Http\Controllers\DeliveryBoyController;
 use App\Http\Controllers\DeliveryAssignmentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerLocationController;
+use App\Http\Controllers\OrderTrackingController;
+use App\Http\Controllers\ForgotPasswordController;
 
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
+//Public Routes
 
-Route::get('/', [HomeController::class, 'index'])
-    ->name('home');
+    Route::get('/', [HomeController::class, 'index'])
+        ->name('home');
 
-Route::get('/category/{category:slug}', [HomeController::class, 'category'])
-    ->name('category');
+    Route::get('/category/{category:slug}', [HomeController::class, 'category'])
+        ->name('category');
 
-/*
-|--------------------------------------------------------------------------
-| Product Details
-|--------------------------------------------------------------------------
-*/
+//Product Details
 
-Route::get('/product/{product:slug}', [HomeController::class, 'product'])
-    ->name('product.show');
+    Route::get('/product/{product:slug}', [HomeController::class, 'product'])
+        ->name('product.show');
 
 
-/*
-|--------------------------------------------------------------------------
-| Authentication
-|--------------------------------------------------------------------------
-*/
+//Authentication
 
-Route::get('/register', [AuthController::class, 'showRegister'])
-    ->name('register');
+    Route::get('/register', [AuthController::class, 'showRegister'])
+        ->name('register');
 
-Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/login', [AuthController::class, 'showLogin'])
-    ->name('login');
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
 
-Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->middleware('guest')
+    ->name('password.request');
 
-/*
-|--------------------------------------------------------------------------
-| Customer Routes
-|--------------------------------------------------------------------------
-*/
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', [
+        'token' => $token,
+    ]);
+})
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
+    ->middleware('guest')
+    ->name('password.update');
+//Customer Routes
 
 Route::middleware('auth')->group(function () {
 
-    // Cart
     Route::get('/cart', [CartController::class, 'index'])
         ->name('cart.index');
 
@@ -75,7 +78,7 @@ Route::middleware('auth')->group(function () {
         ->name('cart.add');
 
     Route::put('/cart/update/{cartItem}', [CartController::class, 'update'])
-    ->name('cart.update');
+        ->name('cart.update');
 
     Route::delete('/cart/remove/{cartItem}', [CartController::class, 'remove'])
         ->name('cart.remove');
@@ -83,44 +86,37 @@ Route::middleware('auth')->group(function () {
     Route::post('/customer/location', [CustomerLocationController::class, 'store'])
         ->name('customer.location.store');
 
+// Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])
+        ->name('checkout.index');
 
-    // Checkout
-    // Checkout
-Route::get('/checkout', [CheckoutController::class, 'index'])
-    ->name('checkout.index');
+    Route::get('/checkout/delivery-charge', [CheckoutController::class, 'deliveryCharge'])
+        ->name('checkout.delivery-charge');
 
-Route::get('/checkout/delivery-charge', [CheckoutController::class, 'deliveryCharge'])
-    ->name('checkout.delivery-charge');
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
+        ->name('checkout.place-order');
 
-Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])
-    ->name('checkout.place-order');
-
-
-    // Address
+// Address
     Route::post('/address/store', [AddressController::class, 'store'])
         ->name('address.store');
 
-
-    // Orders
+// Orders
     Route::get('/orders', [OrderController::class, 'index'])
         ->name('orders.index');
 
     Route::get('/orders/{order}', [OrderController::class, 'show'])
         ->name('orders.show');
+
+    Route::get('/orders/{order}/tracking/location', [OrderTrackingController::class, 'location'])
+        ->name('orders.tracking.location');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Vendor Routes
-|--------------------------------------------------------------------------
-*/
+//Vendor Routes
 
 Route::middleware(['auth', 'role:vendor'])->group(function () {
 
     Route::get('/vendor/dashboard', [VendorController::class, 'dashboard'])
         ->name('vendor.dashboard');
-
 
     // Products
     Route::get('/vendor/products/create', [ProductController::class, 'create'])
@@ -138,14 +134,12 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
     Route::delete('/vendor/products/{product}', [VendorProductController::class, 'destroy'])
         ->name('vendor.products.destroy');
 
-
     // Orders
     Route::get('/vendor/orders', [VendorOrderController::class, 'index'])
         ->name('vendor.orders.index');
 
     Route::put('/vendor/orders/{order}/status', [VendorOrderController::class, 'updateStatus'])
         ->name('vendor.orders.update-status');
-
 
     // Delivery Assignment
     Route::get('/vendor/orders/{order}/assign', [DeliveryAssignmentController::class, 'create'])
@@ -161,12 +155,7 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
         ->name('vendor.location.update');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Delivery Boy Routes
-|--------------------------------------------------------------------------
-*/
+// Delivery Boy Routes
 
 Route::middleware(['auth', 'role:delivery-boy'])->group(function () {
 
@@ -175,14 +164,12 @@ Route::middleware(['auth', 'role:delivery-boy'])->group(function () {
 
     Route::put('/delivery-boy/orders/{assignment}/status', [DeliveryBoyController::class, 'updateStatus'])
         ->name('delivery-boy.orders.update-status');
+    
+    Route::put('/delivery-boy/orders/{assignment}/location', [DeliveryBoyController::class, 'updateLocation'])
+       ->name('delivery-boy.orders.update-location');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
+//Admin Routes
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
@@ -205,10 +192,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.delivery-assignments.index');
 
     Route::get('/admin/orders/{order}', [AdminController::class, 'showOrder'])
-    ->name('admin.orders.show');
+        ->name('admin.orders.show');
 
     Route::put('/admin/vendors/{vendor}/toggle', [AdminController::class, 'toggleVendor'])
-    ->name('admin.vendors.toggle');
+        ->name('admin.vendors.toggle');
 
     Route::put('/admin/products/{product}/toggle', [AdminController::class, 'toggleProduct'])
         ->name('admin.products.toggle');
@@ -216,9 +203,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/products/{product}/availability', [AdminController::class, 'toggleProductAvailability'])
         ->name('admin.products.availability');
     
-    Route::put(
-    '/admin/users/{user}/toggle',
-    [AdminController::class, 'toggleUser']
-)->name('admin.users.toggle');
+    Route::put('/admin/users/{user}/toggle',[AdminController::class, 'toggleUser'])
+        ->name('admin.users.toggle');
 
 });
