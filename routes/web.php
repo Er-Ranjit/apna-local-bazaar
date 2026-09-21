@@ -157,16 +157,16 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 
 // Delivery Boy Routes
 
-Route::middleware(['auth', 'role:delivery-boy'])->group(function () {
+Route::middleware(['auth', 'role:delivery_boy'])->group(function () {
 
     Route::get('/delivery-boy/dashboard', [DeliveryBoyController::class, 'dashboard'])
         ->name('delivery-boy.dashboard');
 
     Route::put('/delivery-boy/orders/{assignment}/status', [DeliveryBoyController::class, 'updateStatus'])
         ->name('delivery-boy.orders.update-status');
-    
+
     Route::put('/delivery-boy/orders/{assignment}/location', [DeliveryBoyController::class, 'updateLocation'])
-       ->name('delivery-boy.orders.update-location');
+        ->name('delivery-boy.orders.update-location');
 });
 
 //Admin Routes
