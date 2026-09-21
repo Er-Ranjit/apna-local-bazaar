@@ -20,7 +20,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', 'min:8'],
-            'role' => ['required', 'in:customer,vendor,delivery-boy'],
+            'role' => ['required', 'in:customer,vendor,delivery_boy'],
         ]);
 
         $user = User::create([
@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         return match ($user->role) {
             'vendor' => redirect()->route('vendor.dashboard'),
-            'delivery-boy' => redirect()->route('delivery-boy.dashboard'),
+            'delivery_boy' => redirect()->route('delivery-boy.dashboard'),
             default => redirect()->route('home'),
         };
     }
@@ -72,7 +72,7 @@ class AuthController extends Controller
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'vendor' => redirect()->route('vendor.dashboard'),
-            'delivery-boy' => redirect()->route('delivery-boy.dashboard'),
+            'delivery_boy' => redirect()->route('delivery-boy.dashboard'),
             default => redirect()->route('home'),
         };
     }

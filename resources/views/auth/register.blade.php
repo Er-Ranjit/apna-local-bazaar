@@ -512,7 +512,7 @@
                                         Vendor
                                     </option>
 
-                                    <option value="delivery-boy" {{ old('role') === 'delivery-boy' ? 'selected' : '' }}>
+                                    <option value="delivery_boy" {{ old('role') === 'delivery-boy' ? 'selected' : '' }}>
                                         Delivery Boy
                                     </option>
 
