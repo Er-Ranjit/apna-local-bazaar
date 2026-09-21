@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,7 @@ class AuthController extends Controller
             'role' => ['required', 'in:customer,vendor,delivery_boy'],
         ]);
 
+        // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -30,10 +32,25 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
+        // Create vendor profile automatically
+        if ($user->role === 'vendor') {
+            Vendor::create([
+                'user_id' => $user->id,
+                'shop_name' => $user->name . "'s Shop",
+                'phone' => null,
+                'address' => null,
+                'city' => null,
+                'image' => null,
+                'is_active' => true,
+            ]);
+        }
+
+        // Login user
         Auth::login($user);
 
         $request->session()->regenerate();
 
+        // Redirect according to role
         return match ($user->role) {
             'vendor' => redirect()->route('vendor.dashboard'),
             'delivery_boy' => redirect()->route('delivery-boy.dashboard'),
@@ -53,8 +70,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Remember Me checkbox
-        
+        // Remember Me
         $remember = $request->boolean('remember');
 
         if (!Auth::attempt($credentials, $remember)) {
