@@ -1168,6 +1168,269 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const securityText =
         document.getElementById('orderSecurityText');
+    
+    const getAddressLocation =
+    document.getElementById('getAddressLocation');
+
+const locationStatus =
+    document.getElementById('locationStatus');
+
+const addressLatitude =
+    document.getElementById('addressLatitude');
+
+const addressLongitude =
+    document.getElementById('addressLongitude');
+
+const addressName =
+    document.querySelector('input[name="name"]');
+
+const addressPhone =
+    document.querySelector('input[name="phone"]');
+
+const addressField =
+    document.querySelector('textarea[name="address"]');
+
+const landmarkField =
+    document.querySelector('input[name="landmark"]');
+
+const villageField =
+    document.querySelector('input[name="village"]');
+
+const cityField =
+    document.querySelector('input[name="city"]');
+
+const stateField =
+    document.querySelector('input[name="state"]');
+
+const pincodeField =
+    document.querySelector('input[name="pincode"]');
+
+
+if (getAddressLocation) {
+
+    getAddressLocation.addEventListener('click', function () {
+
+        if (!navigator.geolocation) {
+
+            locationStatus.textContent =
+                '⚠️ Your browser does not support location services.';
+
+            return;
+        }
+
+
+        locationStatus.textContent =
+            '📍 Getting your current location...';
+
+        getAddressLocation.disabled = true;
+
+        getAddressLocation.textContent =
+            'Getting Location...';
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            async function (position) {
+
+                const latitude =
+                    position.coords.latitude;
+
+                const longitude =
+                    position.coords.longitude;
+
+
+                // Fill hidden coordinates
+                addressLatitude.value =
+                    latitude;
+
+                addressLongitude.value =
+                    longitude;
+
+
+                locationStatus.textContent =
+                    '📍 Location found. Getting address...';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            'https://nominatim.openstreetmap.org/reverse?' +
+                            new URLSearchParams({
+                                format: 'jsonv2',
+                                lat: latitude,
+                                lon: longitude,
+                                addressdetails: '1'
+                            }),
+                            {
+                                headers: {
+                                    'Accept': 'application/json'
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            'Unable to fetch address.'
+                        );
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    const address =
+                        data.address || {};
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | AUTO-FILL ADDRESS
+                    |--------------------------------------------------------------------------
+                    */
+
+
+                    const houseNumber =
+                        address.house_number || '';
+
+                    const road =
+                        address.road || '';
+
+                    const fullAddressParts = [
+                        houseNumber,
+                        road
+                    ].filter(Boolean);
+
+
+                    if (addressField) {
+
+                        addressField.value =
+                            fullAddressParts.join(', ') ||
+                            data.display_name ||
+                            '';
+                    }
+
+
+                    if (landmarkField) {
+
+                        landmarkField.value =
+                            address.neighbourhood ||
+                            address.suburb ||
+                            '';
+                    }
+
+
+                    if (villageField) {
+
+                        villageField.value =
+                            address.village ||
+                            address.town ||
+                            address.municipality ||
+                            '';
+                    }
+
+
+                    if (cityField) {
+
+                        cityField.value =
+                            address.city ||
+                            address.town ||
+                            address.village ||
+                            address.municipality ||
+                            '';
+                    }
+
+
+                    if (stateField) {
+
+                        stateField.value =
+                            address.state ||
+                            '';
+                    }
+
+
+                    if (pincodeField) {
+
+                        pincodeField.value =
+                            address.postcode ||
+                            '';
+                    }
+
+
+                    locationStatus.textContent =
+                        '✅ Address filled automatically. Please review it before saving.';
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Reverse geocoding error:',
+                        error
+                    );
+
+
+                    locationStatus.textContent =
+                        '⚠️ Location found, but address could not be loaded. Please enter the address manually.';
+                }
+
+
+                getAddressLocation.disabled =
+                    false;
+
+                getAddressLocation.textContent =
+                    '📍 Use Current Location';
+            },
+
+
+            function (error) {
+
+                console.error(
+                    'Geolocation error:',
+                    error
+                );
+
+
+                if (error.code === 1) {
+
+                    locationStatus.textContent =
+                        '⚠️ Please allow location permission in your browser.';
+
+                } else if (error.code === 2) {
+
+                    locationStatus.textContent =
+                        '⚠️ Your location could not be determined.';
+
+                } else if (error.code === 3) {
+
+                    locationStatus.textContent =
+                        '⚠️ Location request timed out. Try again.';
+
+                } else {
+
+                    locationStatus.textContent =
+                        '⚠️ Unable to get your current location.';
+                }
+
+
+                getAddressLocation.disabled =
+                    false;
+
+                getAddressLocation.textContent =
+                    '📍 Use Current Location';
+            },
+
+
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+        );
+    });
+}
 
 
     /*
