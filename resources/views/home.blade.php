@@ -1331,7 +1331,17 @@
                     >
                         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 transition group-hover:bg-emerald-100">
                             <img
-                                src="{{ asset('images/categories/' . $category->slug . '.png') }}"
+                                src="{{ asset('images/categories/' . match($category->slug) {
+    'fast-food' => 'fast-food.png',
+    'fruits-vegetables' => 'vegetables.png',
+    'kirana' => 'grocery.png',
+    'dairy-products' => 'dairy.png',
+    'bakery' => 'bakery.png',
+    'medicines' => 'medicine.png',
+    'beverages' => 'beverages.png',
+    'household-essentials' => 'household.png',
+    default => 'grocery.png',
+}) }}"
                                 alt="{{ $category->name }}"
                                 class="h-11 w-11 object-contain"
                                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
