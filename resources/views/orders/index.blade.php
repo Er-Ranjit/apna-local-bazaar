@@ -301,7 +301,7 @@
                                             @if($item->product && $item->product->image)
 
                                                 <img
-                                                    src="{{ asset('storage/' . ltrim($item->product->image, '/')) }}"
+                                                    src="{{ asset('images/' . ltrim($item->product->image, '/')) }}"
                                                     alt="{{ $item->product->name }}"
                                                     class="h-full w-full object-contain p-1.5"
                                                     onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
