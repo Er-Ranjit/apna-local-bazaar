@@ -2756,6 +2756,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const homeCartStorageKey =
         'apna_local_bazaar_home_cart_{{ auth()->id() }}';
+    if ({{ (int) $cartCount }} === 0) {
+    localStorage.removeItem(homeCartStorageKey);
+}
 
     let homeSelectedProducts = {};
 
