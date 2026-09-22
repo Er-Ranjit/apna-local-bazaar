@@ -124,6 +124,20 @@
 
                 </a>
 
+                {{-- SHOP LOCATION --}}
+<a
+    href="{{ route('vendor.location') }}"
+    class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+>
+
+    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+        📍
+    </span>
+
+    Shop Location
+
+</a>
+
 
                 {{-- DELIVERY --}}
                 <a
@@ -797,7 +811,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -854,7 +868,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -1042,7 +1056,7 @@
                                                     @if($product->image)
 
                                                         <img
-                                                            src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                                            src="{{ asset('images/' . ltrim($product->image, '/')) }}"
                                                             alt="{{ $product->name }}"
                                                             class="h-full w-full object-cover"
                                                             onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -1236,7 +1250,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
