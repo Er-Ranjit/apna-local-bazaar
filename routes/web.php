@@ -21,11 +21,18 @@ use App\Http\Controllers\ForgotPasswordController;
 
 //Public Routes
 
+        Route::get('/debug-products', function () {
+    return \App\Models\Product::orderBy('id')
+        ->get(['id', 'name', 'image']);
+});
+
     Route::get('/', [HomeController::class, 'index'])
         ->name('home');
 
     Route::get('/category/{category:slug}', [HomeController::class, 'category'])
         ->name('category');
+
+    
 
 //Product Details
 
