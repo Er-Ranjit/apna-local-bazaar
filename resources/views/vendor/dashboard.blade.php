@@ -811,7 +811,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -868,7 +868,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -1056,7 +1056,7 @@
                                                     @if($product->image)
 
                                                         <img
-                                                            src="{{ asset('images/' . ltrim($product->image, '/')) }}"
+                                                            src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
                                                             alt="{{ $product->name }}"
                                                             class="h-full w-full object-cover"
                                                             onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
@@ -1250,7 +1250,7 @@
                                         @if($product->image)
 
                                             <img
-                                                src="{{ asset('images/' . ltrim($product->image, '/')) }}"
+                                                src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
                                                 alt="{{ $product->name }}"
                                                 class="h-full w-full object-cover"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
