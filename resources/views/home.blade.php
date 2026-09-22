@@ -1011,10 +1011,26 @@
 
                     <div class="flex flex-1 flex-col px-4 pb-4 pt-1">
                         <div>
-                            <span class="inline-flex max-w-full rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">{{ $product->category?->name ?? 'Local Product' }}</span>
-                            <a href="{{ route('product.show', $product->slug) }}" class="mt-2 block min-h-[42px] line-clamp-2 text-[15px] font-extrabold leading-5 text-slate-900 transition hover:text-emerald-700">{{ $product->name }}</a>
-                            <div class="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>In Stock</div>
-                        </div>
+    <span class="inline-flex max-w-full rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">
+        {{ $product->category?->name ?? 'Local Product' }}
+    </span>
+
+    <a href="{{ route('product.show', $product->slug) }}" class="mt-2 block min-h-[42px] line-clamp-2 text-[15px] font-extrabold leading-5 text-slate-900 transition hover:text-emerald-700">
+        {{ $product->name }}
+    </a>
+
+    {{-- Product Description --}}
+    @if(!empty($product->description))
+        <p class="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">
+            {{ $product->description }}
+        </p>
+    @endif
+
+    <div class="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        In Stock
+    </div>
+</div>
 
                         <div class="mt-auto pt-4">
                             <div class="flex items-end justify-between gap-2">

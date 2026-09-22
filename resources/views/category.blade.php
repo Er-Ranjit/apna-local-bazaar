@@ -346,7 +346,7 @@
                             @if($product->image)
 
                                 <img
-                                    src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                    src="{{ asset('images/' . ltrim($product->image, '/')) }}"
                                     alt="{{ $product->name }}"
                                     class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
                                     onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
