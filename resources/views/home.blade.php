@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Apna Local Bazaar</title>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -14,7 +12,7 @@
 
 @php
     $categoryOrder = [
-        'fast-food' => ['🍔', 'Fast Food'],
+        'fast-food' => ['🍔', 'Fast Food'],    
         'fruits-vegetables' => ['🍎', 'Fruits & Vegetables'],
         'kirana' => ['🛍️', 'Grocery'],
         'dairy-products' => ['🥛', 'Dairy Products'],
@@ -28,210 +26,204 @@
 
     $cartCount = $cartCount ?? 0;
 @endphp
+<header class="sticky top-0 z-50 border-b border-slate-200 bg-white">
 
-
-{{-- =========================================================
-    HEADER
-========================================================= --}}
-
-<header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur">
-
-    <div class="mx-auto flex h-16 max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:px-8">
-
-        {{-- Mobile Menu --}}
-        <button
+    <div class="mx-auto flex min-h-[70px] max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:min-h-[76px] lg:gap-5 lg:px-8">
+<button
+            type="button"
             id="mobileMenuButton"
-            type="button"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 lg:hidden"
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl text-slate-700 transition hover:bg-emerald-50 lg:hidden"
+            aria-label="Open menu"
         >
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
+            ☰
         </button>
-
-
-        {{-- Logo --}}
-        <a
+<a
             href="{{ route('home') }}"
-            class="flex shrink-0 items-center gap-2"
+            class="shrink-0"
         >
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl shadow-sm">
-                🛍️
-            </div>
-
-            <div class="hidden sm:block">
-                <div class="text-base font-black leading-none text-slate-900">
-                    Apna Local Bazaar
-                </div>
-
-                <div class="mt-1 text-[10px] font-semibold text-emerald-600">
-                    Shop Local • Live Local
-                </div>
-            </div>
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="Apna Local Bazaar"
+                class="h-9 w-auto object-contain sm:h-10 lg:h-12"
+            >
         </a>
-
-
-        {{-- Desktop Location --}}
-        <button
+<button
             type="button"
-            class="customer-location-button ml-2 hidden h-10 max-w-[190px] items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-left transition hover:border-emerald-300 hover:bg-emerald-50 lg:flex"
+            class="customer-location-button hidden shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-left transition hover:bg-emerald-50 lg:flex"
         >
-            <span class="text-lg">📍</span>
+            <img
+                src="{{ asset('images/icons/location.png') }}"
+                alt=""
+                class="h-7 w-7 object-contain"
+            >
 
-            <span class="min-w-0">
-                <span class="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+            <div>
+                <p class="text-[11px] font-medium text-slate-400">
                     Deliver to
-                </span>
+                </p>
 
-                <span
+                <p
                     id="desktopLocationText"
-                    class="block truncate text-xs font-bold text-slate-700"
+                    class="max-w-40 truncate text-sm font-bold text-slate-800"
                 >
-                    @auth
-                        {{ auth()->user()->latitude ? 'Current Location' : 'Select Location' }}
-                    @else
-                        Select Location
-                    @endauth
-                </span>
+                    {{ auth()->check() && auth()->user()->latitude !== null && auth()->user()->longitude !== null ? 'Location Saved' : 'Select Location' }}
+                    <span class="ml-1 text-slate-400">⌄</span>
+                </p>
+            </div>
+        </button>
+<button
+            type="button"
+            class="customer-location-button ml-auto flex items-center gap-1.5 rounded-xl px-2 py-2 transition hover:bg-emerald-50 lg:hidden"
+        >
+            <img
+                src="{{ asset('images/icons/location.png') }}"
+                alt=""
+                class="h-5 w-5 object-contain"
+            >
+
+            <span
+                id="mobileLocationText"
+                class="max-w-28 truncate text-xs font-bold text-slate-800 sm:max-w-36"
+            >
+                {{ auth()->check() && auth()->user()->latitude !== null && auth()->user()->longitude !== null ? 'Location Saved' : 'Select Location' }}
+            </span>
+
+            <span class="text-slate-400">
+                ⌄
             </span>
         </button>
+<div
+            class="relative hidden h-12 min-w-0 flex-1 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-emerald-500 focus-within:bg-white lg:flex"
+        >
 
-
-        {{-- Desktop Search --}}
-        <div class="relative ml-auto hidden w-full max-w-xl lg:block">
+            <img
+                src="{{ asset('images/icons/search.png') }}"
+                alt=""
+                class="ml-4 h-5 w-5 shrink-0 object-contain"
+            >
 
             <input
                 id="desktopProductSearch"
                 type="search"
-                placeholder="Search products, categories..."
-                class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-12 text-sm outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                autocomplete="off"
+                placeholder="Search for products, groceries and more..."
+                class="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-slate-700 outline-none placeholder:text-slate-400"
             >
-
-            <svg
-                class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
-            </svg>
 
             <button
-                id="desktopSearchButton"
                 type="button"
-                class="absolute right-1.5 top-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
+                id="desktopSearchButton"
+                class="mr-1.5 flex h-10 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
+                aria-label="Search"
             >
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
-                </svg>
+                ⌕
             </button>
 
         </div>
-
-
-        {{-- Mobile Location --}}
-        <button
-            type="button"
-            class="customer-location-button ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg lg:hidden"
+<a
+            href="{{ auth()->check() ? route('cart.index') : route('login') }}"
+            class="relative hidden shrink-0 rounded-xl p-3 transition hover:bg-emerald-50 lg:block"
         >
-            📍
-        </button>
-
-
-        {{-- Cart --}}
-        <a
-            href="{{ route('cart.index') }}"
-            class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:border-emerald-300 hover:bg-emerald-50"
-        >
-            <svg class="h-5 w-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                    d="M3 3h2l2.4 11.4a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 7H6"/>
-                <circle cx="10" cy="20" r="1.5"/>
-                <circle cx="18" cy="20" r="1.5"/>
-            </svg>
+            <img
+                src="{{ asset('images/icons/cart.png') }}"
+                alt="Cart"
+                class="h-7 w-7 object-contain"
+            >
 
             <span
                 id="desktopCartCount"
-                class="absolute -right-1.5 -top-1.5 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1 text-[10px] font-black text-white"
+                class="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white"
             >
                 {{ $cartCount }}
             </span>
         </a>
+@auth
 
+            <details class="relative hidden shrink-0 lg:block">
 
-        {{-- Auth --}}
-        @auth
+                <summary class="flex cursor-pointer list-none items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 transition hover:border-emerald-100 hover:bg-emerald-50">
 
-            <div class="group relative hidden lg:block">
-
-                <button
-                    type="button"
-                    class="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 transition hover:bg-slate-50"
-                >
-                    <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-xs font-black text-emerald-700">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
 
-                    <span class="max-w-[100px] truncate text-xs font-bold text-slate-700">
-                        {{ auth()->user()->name }}
-                    </span>
+                    <div class="hidden text-left xl:block">
 
-                    <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m6 9 6 6 6-6"/>
-                    </svg>
-                </button>
+                        <p class="text-[11px] font-medium text-slate-400">
+                            Welcome back
+                        </p>
 
-
-                <div class="invisible absolute right-0 top-full mt-2 w-52 translate-y-2 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-
-                    <div class="border-b border-slate-100 px-3 py-2">
-                        <p class="text-xs font-black text-slate-800">
+                        <p class="max-w-28 truncate text-sm font-bold text-slate-800">
                             {{ auth()->user()->name }}
                         </p>
 
-                        <p class="mt-0.5 truncate text-[11px] text-slate-400">
+                    </div>
+
+                    <span class="text-slate-400">
+                        ⌄
+                    </span>
+
+                </summary>
+
+
+                <div class="absolute right-0 top-14 z-50 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+
+                    <div class="border-b border-slate-100 p-4">
+
+                        <p class="font-bold text-slate-900">
+                            {{ auth()->user()->name }}
+                        </p>
+
+                        <p class="mt-1 truncate text-xs text-slate-500">
                             {{ auth()->user()->email }}
                         </p>
+
                     </div>
+
 
                     <a
                         href="{{ route('orders.index') }}"
-                        class="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        class="block px-4 py-3 text-sm transition hover:bg-emerald-50"
                     >
-                        📦 My Orders
+                        My Orders
                     </a>
 
                     <a
                         href="{{ route('cart.index') }}"
-                        class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        class="block px-4 py-3 text-sm transition hover:bg-emerald-50"
                     >
-                        🛒 My Cart
+                        My Cart
                     </a>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
 
-                        <button
-                            type="submit"
-                            class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-600 hover:bg-red-50"
+                    <div class="border-t border-slate-100">
+
+                        <form
+                            action="{{ route('logout') }}"
+                            method="POST"
                         >
-                            🚪 Logout
-                        </button>
-                    </form>
+                            @csrf
+
+                            <button
+                                type="submit"
+                                class="w-full px-4 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+                            >
+                                Logout
+                            </button>
+
+                        </form>
+
+                    </div>
 
                 </div>
 
-            </div>
+            </details>
 
         @else
 
             <a
                 href="{{ route('login') }}"
-                class="hidden rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white transition hover:bg-emerald-700 lg:block"
+                class="hidden shrink-0 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 lg:block"
             >
                 Login
             </a>
@@ -239,36 +231,31 @@
         @endauth
 
     </div>
+<div class="border-t border-slate-100 px-4 pb-3 lg:hidden">
 
+        <div class="flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm focus-within:border-emerald-500 focus-within:bg-white">
 
-    {{-- Mobile Search --}}
-    <div class="px-4 pb-3 lg:hidden">
-
-        <div class="relative">
+            <img
+                src="{{ asset('images/icons/search.png') }}"
+                alt=""
+                class="ml-3 h-5 w-5 shrink-0 object-contain"
+            >
 
             <input
                 id="mobileProductSearch"
                 type="search"
-                placeholder="Search products..."
-                class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-12 text-sm outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                autocomplete="off"
+                placeholder="Search products and more..."
+                class="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-slate-400"
             >
-
-            <svg
-                class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
-            </svg>
 
             <button
                 id="mobileSearchButton"
                 type="button"
-                class="absolute right-1.5 top-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white"
+                class="mr-1 flex h-10 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white"
+                aria-label="Search"
             >
-                🔍
+                ⌕
             </button>
 
         </div>
@@ -276,46 +263,32 @@
     </div>
 
 </header>
-
-
-
-{{-- =========================================================
-    MOBILE MENU
-========================================================= --}}
-
 <div
     id="mobileMenu"
-    class="fixed inset-0 z-[70] hidden"
+    class="fixed inset-0 z-[60] hidden lg:hidden"
 >
 
     <div
         id="mobileMenuOverlay"
-        class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
+        class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
     ></div>
 
 
-    <aside class="absolute left-0 top-0 h-full w-[85%] max-w-sm overflow-y-auto bg-white shadow-2xl">
+    <div class="relative h-full w-[84%] max-w-sm bg-white shadow-2xl">
 
-        <div class="flex h-16 items-center justify-between border-b border-slate-100 px-5">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
 
-            <a
-                href="{{ route('home') }}"
-                class="flex items-center gap-2"
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="Apna Local Bazaar"
+                class="h-9 w-auto"
             >
-                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600">
-                    🛍️
-                </div>
-
-                <span class="text-sm font-black">
-                    Apna Local Bazaar
-                </span>
-            </a>
-
 
             <button
                 id="closeMobileMenu"
                 type="button"
-                class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100"
+                class="flex h-10 w-10 items-center justify-center rounded-xl text-lg hover:bg-slate-100"
+                aria-label="Close menu"
             >
                 ✕
             </button>
@@ -327,25 +300,21 @@
 
             @auth
 
-                <div class="mb-4 rounded-2xl bg-emerald-50 p-4">
+                <div class="mb-5 flex items-center gap-3 rounded-2xl bg-emerald-50 p-4">
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
 
-                        <div class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-600 font-black text-white">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
+                    <div class="min-w-0">
 
-                        <div class="min-w-0">
+                        <p class="text-xs text-slate-400">
+                            Welcome back
+                        </p>
 
-                            <p class="truncate text-sm font-black text-slate-800">
-                                {{ auth()->user()->name }}
-                            </p>
-
-                            <p class="truncate text-xs text-slate-500">
-                                {{ auth()->user()->email }}
-                            </p>
-
-                        </div>
+                        <p class="truncate font-bold">
+                            {{ auth()->user()->name }}
+                        </p>
 
                     </div>
 
@@ -358,114 +327,123 @@
 
                 <a
                     href="{{ route('home') }}"
-                    class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                    class="block rounded-xl px-4 py-3 font-medium transition hover:bg-emerald-50"
                 >
-                    🏠 Home
+                    Home
                 </a>
-
 
                 @auth
 
                     <a
                         href="{{ route('orders.index') }}"
-                        class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                        class="block rounded-xl px-4 py-3 font-medium transition hover:bg-emerald-50"
                     >
-                        📦 My Orders
+                        My Orders
                     </a>
 
                     <a
                         href="{{ route('cart.index') }}"
-                        class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                        class="block rounded-xl px-4 py-3 font-medium transition hover:bg-emerald-50"
                     >
-                        🛒 My Cart
+                        My Cart
                     </a>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-
-                        <button
-                            type="submit"
-                            class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold text-red-600 hover:bg-red-50"
-                        >
-                            🚪 Logout
-                        </button>
-                    </form>
 
                 @else
 
                     <a
                         href="{{ route('login') }}"
-                        class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-emerald-700 hover:bg-emerald-50"
+                        class="block rounded-xl px-4 py-3 font-medium transition hover:bg-emerald-50"
                     >
-                        🔐 Login
+                        Login
                     </a>
 
                 @endauth
 
             </nav>
 
+
+            @auth
+
+                <form
+                    action="{{ route('logout') }}"
+                    method="POST"
+                    class="mt-4 border-t border-slate-100 pt-4"
+                >
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="w-full rounded-xl px-4 py-3 text-left font-medium text-red-600 transition hover:bg-red-50"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            @endauth
+
         </div>
 
-    </aside>
+    </div>
 
 </div>
-
-
-
-{{-- =========================================================
-    MAIN
-========================================================= --}}
-
 <main class="mx-auto max-w-[1440px] px-4 py-4 pb-40 sm:px-6 sm:py-6 lg:px-8">
+<section class="hidden gap-6 lg:grid lg:grid-cols-[245px_minmax(0,1fr)]">
+<aside class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
+            <div class="flex items-center gap-3 bg-emerald-600 px-5 py-4 text-white">
 
-    {{-- =====================================================
-        DESKTOP CATEGORY + HERO
-    ====================================================== --}}
-
-    <section class="hidden gap-6 lg:grid lg:grid-cols-[245px_minmax(0,1fr)]">
-
-        {{-- Categories --}}
-        <aside class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-
-            <div class="mb-3 flex items-center justify-between">
-
-                <h2 class="text-sm font-black text-slate-900">
-                    Shop by Category
-                </h2>
-
-                <span class="text-xs text-emerald-600">
-                    All
+                <span class="text-xl">
+                    ☰
                 </span>
+
+                <h2 class="font-bold">
+                    All Categories
+                </h2>
 
             </div>
 
 
-            <div class="space-y-1">
+            <div class="divide-y divide-slate-100">
 
-                @foreach($categoryOrder as $slug => [$icon, $label])
+                @foreach($categoryOrder as $slug => $meta)
 
-                    @php
-                        $category = $categoryMap->get($slug);
-                    @endphp
+                    @if($categoryMap->has($slug))
 
-                    @if($category)
+                        @php
+                            $category = $categoryMap->get($slug);
+                        @endphp
 
                         <a
-                            href="{{ route('category.show', $category->slug) }}"
-                            class="group flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-emerald-50"
+                            href="{{ route('category', $category->slug) }}"
+                            class="group flex min-h-[48px] items-center gap-3 px-5 py-2.5 transition hover:bg-emerald-50"
                         >
 
-                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-lg transition group-hover:bg-white">
-                                {{ $icon }}
+                            @if(!empty($category->image))
+
+                                <img
+                                    src="{{ asset('images/' . ltrim($category->image, '/')) }}"
+                                    alt="{{ $meta[1] }}"
+                                    class="h-7 w-7 shrink-0 rounded-md object-contain"
+                                    onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';"
+                                >
+
+                            @else
+
+                                <span class="flex h-7 w-7 shrink-0 items-center justify-center text-xl">
+                                    {{ $meta[0] }}
+                                </span>
+
+                            @endif
+
+
+                            <span class="text-sm font-medium text-slate-800 group-hover:text-emerald-700">
+                                {{ $meta[1] }}
                             </span>
 
-                            <span class="flex-1 text-sm font-semibold text-slate-700 group-hover:text-emerald-700">
-                                {{ $label }}
-                            </span>
 
-                            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-500">
-                                →
+                            <span class="ml-auto text-slate-400 transition group-hover:translate-x-1 group-hover:text-emerald-600">
+                                ›
                             </span>
 
                         </a>
@@ -476,68 +454,95 @@
 
             </div>
 
+
+            <a
+                href="#mobileCategories"
+                class="m-3 flex items-center justify-center rounded-lg bg-emerald-50 py-2.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100"
+            >
+                View All Categories
+            </a>
+
         </aside>
+<div
+            id="heroSliderDesktop"
+            class="relative h-[340px] overflow-hidden rounded-2xl border border-slate-200 shadow-sm"
+        >
 
+            <div class="hero-slide-desktop absolute inset-0 opacity-100 transition-opacity duration-700">
 
-        {{-- Desktop Hero --}}
-        <div class="relative min-h-[390px] overflow-hidden rounded-3xl bg-slate-900 shadow-sm">
-
-            @foreach([1, 2, 3] as $banner)
-
-                <div
-                    class="hero-slide-desktop absolute inset-0 opacity-0 transition-opacity duration-700"
+                <img
+                    src="{{ asset('images/banner1.png') }}"
+                    alt="Fast delivery"
+                    class="h-full w-full object-cover"
                 >
 
-                    <img
-                        src="{{ asset('images/banner' . $banner . '.png') }}"
-                        alt="Apna Local Bazaar Banner {{ $banner }}"
-                        class="h-full w-full object-cover"
-                    >
-
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-transparent"></div>
+            </div>
 
 
-                    <div class="absolute inset-0 flex items-center px-8 xl:px-14">
+            <div class="hero-slide-desktop absolute inset-0 opacity-0 transition-opacity duration-700">
 
-                        <div class="max-w-xl text-white">
+                <img
+                    src="{{ asset('images/banner2.png') }}"
+                    alt="Fresh groceries"
+                    class="h-full w-full object-cover"
+                >
 
-                            <span class="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
-                                Local Shopping Made Easy
-                            </span>
+            </div>
 
-                            <h1 class="mt-4 text-4xl font-black leading-tight xl:text-5xl">
-                                Fresh Products.
-                                <br>
-                                Local Shops.
-                                <br>
-                                Better Shopping.
-                            </h1>
 
-                            <p class="mt-4 max-w-lg text-sm leading-6 text-white/80">
-                                Discover quality products from trusted local shops and get them delivered to your doorstep.
-                            </p>
+            <div class="hero-slide-desktop absolute inset-0 opacity-0 transition-opacity duration-700">
 
-                            <a
-                                href="#desktopProducts"
-                                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:bg-emerald-700"
-                            >
-                                Shop Now
-                                <span>→</span>
-                            </a>
+                <img
+                    src="{{ asset('images/banner3.png') }}"
+                    alt="Local marketplace"
+                    class="h-full w-full object-cover"
+                >
 
-                        </div>
+            </div>
 
-                    </div>
 
-                </div>
+            <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent"></div>
 
-            @endforeach
+
+            <div class="relative z-10 flex h-full max-w-[620px] flex-col justify-center px-8 sm:px-10 xl:px-12">
+
+                <span class="w-fit rounded-full bg-white/85 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 backdrop-blur">
+                    Apna Local Bazaar
+                </span>
+
+                <h1 class="mt-4 text-4xl font-black leading-tight text-slate-950 xl:text-[42px]">
+
+                    Local products.
+
+                    <span class="block text-emerald-600">
+                        Simple shopping.
+                    </span>
+
+                </h1>
+
+                <p class="mt-4 max-w-lg text-sm leading-6 text-slate-700 xl:text-base">
+                    Shop from nearby sellers and get the things you need without the extra hassle.
+                </p>
+
+                <a
+                    href="#desktopProducts"
+                    class="mt-6 inline-flex w-fit items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-bold text-white transition hover:bg-emerald-700"
+                >
+                    Shop Now
+
+                    <span class="text-xl">
+                        →
+                    </span>
+                </a>
+
+            </div>
 
 
             <button
                 id="prevSlideDesktop"
                 type="button"
-                class="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/30"
+                aria-label="Previous banner"
+                class="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow-lg transition hover:bg-white"
             >
                 ‹
             </button>
@@ -546,92 +551,123 @@
             <button
                 id="nextSlideDesktop"
                 type="button"
-                class="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/30"
+                aria-label="Next banner"
+                class="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow-lg transition hover:bg-white"
             >
                 ›
             </button>
 
 
-            <div class="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2">
+            <div class="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
 
-                @foreach([1, 2, 3] as $dot)
+                <button
+                    type="button"
+                    data-desktop-slide="0"
+                    class="desktop-slider-dot h-2 w-7 rounded-full bg-emerald-600"
+                    aria-label="Slide 1"
+                ></button>
 
-                    <button
-                        type="button"
-                        class="desktop-slider-dot h-2 rounded-full bg-white/70 transition-all"
-                    ></button>
+                <button
+                    type="button"
+                    data-desktop-slide="1"
+                    class="desktop-slider-dot h-2 w-2 rounded-full bg-white/70"
+                    aria-label="Slide 2"
+                ></button>
 
-                @endforeach
+                <button
+                    type="button"
+                    data-desktop-slide="2"
+                    class="desktop-slider-dot h-2 w-2 rounded-full bg-white/70"
+                    aria-label="Slide 3"
+                ></button>
 
             </div>
 
         </div>
 
     </section>
+<section class="lg:hidden">
 
+        <div
+            id="heroSliderMobile"
+            class="relative h-[230px] overflow-hidden rounded-2xl shadow-sm sm:h-[290px]"
+        >
 
+            <div class="hero-slide-mobile absolute inset-0 opacity-100 transition-opacity duration-700">
 
-    {{-- =====================================================
-        MOBILE HERO
-    ====================================================== --}}
-
-    <section class="relative lg:hidden">
-
-        <div class="relative h-[300px] overflow-hidden rounded-3xl bg-slate-900 shadow-sm">
-
-            @foreach([1, 2, 3] as $banner)
-
-                <div
-                    class="hero-slide-mobile absolute inset-0 opacity-0 transition-opacity duration-700"
+                <img
+                    src="{{ asset('images/banner1.png') }}"
+                    alt="Fast delivery"
+                    class="h-full w-full object-cover"
                 >
 
-                    <img
-                        src="{{ asset('images/banner' . $banner . '.png') }}"
-                        alt="Apna Local Bazaar Banner {{ $banner }}"
-                        class="h-full w-full object-cover"
-                    >
-
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/20 to-transparent"></div>
+            </div>
 
 
-                    <div class="absolute inset-0 flex items-center px-5">
+            <div class="hero-slide-mobile absolute inset-0 opacity-0 transition-opacity duration-700">
 
-                        <div class="max-w-[75%] text-white">
+                <img
+                    src="{{ asset('images/banner2.png') }}"
+                    alt="Fresh groceries"
+                    class="h-full w-full object-cover"
+                >
 
-                            <span class="inline-flex rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold backdrop-blur">
-                                Shop Local
-                            </span>
+            </div>
 
-                            <h1 class="mt-3 text-2xl font-black leading-tight">
-                                Fresh Products.
-                                <br>
-                                Local Delivery.
-                            </h1>
 
-                            <p class="mt-3 text-xs leading-5 text-white/80">
-                                Quality products from trusted local shops.
-                            </p>
+            <div class="hero-slide-mobile absolute inset-0 opacity-0 transition-opacity duration-700">
 
-                            <a
-                                href="#mobileProducts"
-                                class="mt-4 inline-flex rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white"
-                            >
-                                Shop Now →
-                            </a>
+                <img
+                    src="{{ asset('images/banner3.png') }}"
+                    alt="Local marketplace"
+                    class="h-full w-full object-cover"
+                >
 
-                        </div>
+            </div>
 
-                    </div>
 
-                </div>
+            <div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/30 to-transparent"></div>
 
-            @endforeach
+
+            <div class="relative z-10 flex h-full max-w-[74%] flex-col justify-center px-5 sm:max-w-[64%] sm:px-7">
+
+                <span class="w-fit rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-700 backdrop-blur">
+                    Apna Local Bazaar
+                </span>
+
+                <h1 class="mt-2 text-2xl font-black leading-[1.08] text-slate-950 sm:text-3xl">
+
+                    Local products.
+
+                    <span class="block text-emerald-600">
+                        Simple shopping.
+                    </span>
+
+                </h1>
+
+                <p class="mt-2 text-[11px] font-semibold leading-5 text-slate-700 sm:text-sm">
+                    Fast delivery • Best quality • Cash on Delivery
+                </p>
+
+                <a
+                    href="#mobileProducts"
+                    class="mt-3 inline-flex w-fit items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg sm:px-5 sm:py-3 sm:text-sm"
+                >
+                    Shop Now
+
+                    <span class="text-base">
+                        →
+                    </span>
+                </a>
+
+            </div>
 
 
             <button
                 id="prevSlideMobile"
                 type="button"
-                class="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur"
+                aria-label="Previous banner"
+                class="absolute left-2.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow-md"
             >
                 ‹
             </button>
@@ -640,48 +676,39 @@
             <button
                 id="nextSlideMobile"
                 type="button"
-                class="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur"
+                aria-label="Next banner"
+                class="absolute right-2.5 top-1/2 z-20 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg shadow-md"
             >
                 ›
             </button>
 
 
-            <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
+            <div class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-2">
 
-                @foreach([1, 2, 3] as $dot)
+                <span class="mobile-slider-dot h-2 w-7 rounded-full bg-emerald-600"></span>
 
-                    <button
-                        type="button"
-                        class="mobile-slider-dot h-2 rounded-full bg-white/70 transition-all"
-                    ></button>
+                <span class="mobile-slider-dot h-2 w-2 rounded-full bg-white/70"></span>
 
-                @endforeach
+                <span class="mobile-slider-dot h-2 w-2 rounded-full bg-white/70"></span>
 
             </div>
 
         </div>
 
     </section>
-
-
-
-    {{-- =====================================================
-        MOBILE CATEGORIES
-    ====================================================== --}}
-
-    <section
+<section
         id="mobileCategories"
-        class="mt-5 lg:hidden"
+        class="mt-6 lg:hidden"
     >
 
         <div class="mb-3 flex items-center justify-between">
 
-            <h2 class="text-sm font-black">
+            <h2 class="text-lg font-extrabold">
                 Categories
             </h2>
 
-            <span class="text-xs font-semibold text-emerald-600">
-                Explore
+            <span class="text-xs font-semibold text-slate-400">
+                Swipe to explore
             </span>
 
         </div>
@@ -689,26 +716,43 @@
 
         <div class="flex gap-3 overflow-x-auto pb-2">
 
-            @foreach($categoryOrder as $slug => [$icon, $label])
+            @foreach($categoryOrder as $slug => $meta)
 
-                @php
-                    $category = $categoryMap->get($slug);
-                @endphp
+                @if($categoryMap->has($slug))
 
-                @if($category)
+                    @php
+                        $category = $categoryMap->get($slug);
+                    @endphp
 
                     <a
-                        href="{{ route('category.show', $category->slug) }}"
-                        class="flex min-w-[92px] shrink-0 flex-col items-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50"
+                        href="{{ route('category', $category->slug) }}"
+                        class="group flex w-[88px] shrink-0 flex-col items-center"
                     >
 
-                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-xl">
-                            {{ $icon }}
-                        </span>
+                        <div class="flex h-[78px] w-[78px] items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm transition group-hover:border-emerald-200 group-hover:bg-emerald-50">
 
-                        <span class="mt-2 text-center text-[11px] font-bold text-slate-700">
-                            {{ $label }}
-                        </span>
+                            @if(!empty($category->image))
+
+                                <img
+                                    src="{{ asset('images/' . ltrim($category->image, '/')) }}"
+                                    alt="{{ $meta[1] }}"
+                                    class="h-14 w-14 object-contain"
+                                    onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';"
+                                >
+
+                            @else
+
+                                <span class="text-3xl">
+                                    {{ $meta[0] }}
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                        <p class="mt-2 line-clamp-2 text-center text-xs font-semibold text-slate-700">
+                            {{ $meta[1] }}
+                        </p>
 
                     </a>
 
@@ -719,38 +763,57 @@
         </div>
 
     </section>
-
-
-
-    {{-- =====================================================
-        MOBILE CATEGORY FILTERS
-    ====================================================== --}}
-
-    <section
+<section
+        class="mt-7 lg:hidden"
         id="mobileCategoryFilters"
-        class="mt-5 lg:hidden"
     >
+
+        <div class="mb-3 flex items-center justify-between">
+
+            <div>
+
+                <h2 class="text-xl font-extrabold">
+                    Popular Categories
+                </h2>
+
+                <p
+                    id="mobileCategoryMessage"
+                    class="mt-1 hidden text-xs font-medium text-emerald-700"
+                ></p>
+
+            </div>
+
+            <button
+                type="button"
+                id="mobileFilterReset"
+                class="hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-emerald-700 shadow-sm"
+            >
+                All Products
+            </button>
+
+        </div>
+
 
         <div class="flex gap-2 overflow-x-auto pb-1">
 
             @foreach([
-                '' => 'All',
-                'burger' => 'Burgers',
-                'pizza' => 'Pizza',
-                'roll' => 'Rolls',
-                'momos' => 'Snacks',
-                'drink' => 'Drinks',
-            ] as $filter => $label)
+                ['All', ''],
+                ['Burgers', 'burger'],
+                ['Pizza', 'pizza'],
+                ['Rolls', 'roll'],
+                ['Snacks', 'snack'],
+                ['Drinks', 'drink'],
+            ] as $index => $chip)
 
                 <button
                     type="button"
-                    class="category-chip shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition
-                    {{ $filter === '' 
+                    data-mobile-category="{{ $chip[1] }}"
+                    class="category-chip shrink-0 rounded-xl border px-5 py-2.5 text-sm font-semibold transition
+                    {{ $index === 0
                         ? 'border-emerald-600 bg-emerald-600 text-white shadow-sm'
-                        : 'border-slate-200 bg-white text-slate-700' }}"
-                    data-mobile-category="{{ $filter }}"
+                        : 'border-slate-200 bg-white text-slate-700 hover:bg-emerald-50' }}"
                 >
-                    {{ $label }}
+                    {{ $chip[0] }}
                 </button>
 
             @endforeach
@@ -758,26 +821,25 @@
         </div>
 
     </section>
+<section class="mt-7 lg:hidden">
 
-
-
-    {{-- =====================================================
-        MOBILE LOCAL SHOPS
-    ====================================================== --}}
-
-    <section class="mt-7 lg:hidden">
-
-        <div class="mb-3 flex items-center justify-between">
+        <div class="mb-3 flex items-end justify-between">
 
             <div>
-                <h2 class="text-lg font-black">
+
+                <h2 class="text-xl font-extrabold">
                     Local Shops
                 </h2>
 
-                <p class="mt-0.5 text-xs text-slate-500">
-                    Shops near you
+                <p class="mt-1 text-xs text-slate-500">
+                    Trusted stores around you
                 </p>
+
             </div>
+
+            <span class="text-xs font-bold text-emerald-700">
+                View All →
+            </span>
 
         </div>
 
@@ -786,62 +848,69 @@
 
             @forelse($vendors as $vendor)
 
-                <div class="min-w-[220px] shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div class="w-[245px] shrink-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
 
-                    <div class="relative h-28 bg-slate-100">
+                    <div class="flex items-center gap-3">
 
-                        <img
-                            src="{{ $vendor->image ? asset($vendor->image) : asset('images/shop-placeholder.png') }}"
-                            alt="{{ $vendor->shop_name }}"
-                            class="h-full w-full object-cover"
-                            onerror="this.onerror=null;this.src='{{ asset('images/shop-placeholder.png') }}';"
-                        >
+                        @if(!empty($vendor->image))
 
-                        <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-black text-emerald-700 shadow-sm">
-                            Local Shop
-                        </span>
+                            <img
+                                src="{{ asset('storage/' . ltrim($vendor->image, '/')) }}"
+                                alt="{{ $vendor->shop_name ?? 'Local Shop' }}"
+                                class="h-14 w-14 shrink-0 rounded-full object-cover"
+                                onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';"
+                            >
+
+                        @else
+
+                            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-50">
+
+                                <img
+                                    src="{{ asset('images/features/shop.png') }}"
+                                    alt=""
+                                    class="h-9 w-9 object-contain"
+                                >
+
+                            </div>
+
+                        @endif
+
+
+                        <div class="min-w-0 flex-1">
+
+                            <h3 class="truncate text-sm font-bold text-slate-900">
+                                {{ $vendor->shop_name ?? 'Local Store' }}
+                            </h3>
+
+                            <p class="mt-1 truncate text-xs text-slate-500">
+                                {{ $vendor->city ?? 'Local Store' }}
+                            </p>
+
+                            <div class="mt-2 flex items-center gap-3 text-xs">
+
+                                <span class="font-semibold text-slate-600">
+                                    ★ 4.5
+                                </span>
+
+                                <span class="text-slate-500">Local shop</span>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
 
-                    <div class="p-3">
-
-                        <h3 class="truncate text-sm font-black text-slate-800">
-                            {{ $vendor->shop_name }}
-                        </h3>
-
-                        <p class="mt-1 truncate text-xs text-slate-500">
-                            📍 {{ $vendor->city ?: 'Nearby' }}
-                        </p>
-
-                        <div class="mt-2 flex items-center justify-between">
-
-                            <span class="text-xs font-bold text-amber-500">
-                                ★ 4.5
-                            </span>
-
-                            <span class="text-[10px] font-semibold text-emerald-600">
-                                Local delivery available
-                            </span>
-
-                        </div>
-
+                    <div class="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-semibold text-emerald-700">
+                        Local delivery available
                     </div>
 
                 </div>
 
             @empty
 
-                <div class="w-full rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center">
-
-                    <div class="text-2xl">
-                        🏪
-                    </div>
-
-                    <p class="mt-2 text-sm font-bold text-slate-700">
-                        No nearby shops found
-                    </p>
-
+                <div class="w-full rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                    No local shops available.
                 </div>
 
             @endforelse
@@ -849,378 +918,319 @@
         </div>
 
     </section>
+<section class="mt-5 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:block">
 
+        <div class="grid grid-cols-4">
 
+            @foreach([
+                ['images/features/delivery.png', 'Fast Delivery', 'Delivered to your door'],
+                ['images/features/payment.png', 'Cash on Delivery', 'Safe and convenient'],
+                ['images/features/quality.png', 'Best Quality', '100% trusted'],
+                ['images/features/shop.png', 'Local Shops', 'Support local sellers'],
+            ] as $feature)
 
-    {{-- =====================================================
-        DESKTOP FEATURE STRIP
-    ====================================================== --}}
+                <div class="flex items-center gap-4 border-r border-slate-100 px-5 py-5 last:border-r-0">
 
-    <section class="mt-8 hidden grid-cols-4 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:grid">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50">
 
-        <div class="flex items-center gap-3 border-r border-slate-100 p-5">
+                        <img
+                            src="{{ asset($feature[0]) }}"
+                            alt=""
+                            class="h-9 w-9 object-contain"
+                        >
 
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-xl">
-                🚚
-            </div>
+                    </div>
 
-            <div>
-                <h3 class="text-sm font-black">
-                    Fast Delivery
-                </h3>
+                    <div>
 
-                <p class="mt-0.5 text-xs text-slate-500">
-                    Quick local delivery
-                </p>
-            </div>
+                        <h3 class="text-sm font-bold text-slate-900">
+                            {{ $feature[1] }}
+                        </h3>
 
-        </div>
+                        <p class="mt-0.5 text-xs text-slate-500">
+                            {{ $feature[2] }}
+                        </p>
 
+                    </div>
 
-        <div class="flex items-center gap-3 border-r border-slate-100 p-5">
+                </div>
 
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                💵
-            </div>
-
-            <div>
-                <h3 class="text-sm font-black">
-                    Cash on Delivery
-                </h3>
-
-                <p class="mt-0.5 text-xs text-slate-500">
-                    Pay when delivered
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="flex items-center gap-3 border-r border-slate-100 p-5">
-
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-xl">
-                ⭐
-            </div>
-
-            <div>
-                <h3 class="text-sm font-black">
-                    Best Quality
-                </h3>
-
-                <p class="mt-0.5 text-xs text-slate-500">
-                    Trusted local products
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="flex items-center gap-3 p-5">
-
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-xl">
-                🏪
-            </div>
-
-            <div>
-                <h3 class="text-sm font-black">
-                    Local Shops
-                </h3>
-
-                <p class="mt-0.5 text-xs text-slate-500">
-                    Support local business
-                </p>
-            </div>
+            @endforeach
 
         </div>
 
     </section>
-
-
-
-    {{-- =====================================================
-        DESKTOP PRODUCTS
-    ====================================================== --}}
-
-    <section
-        id="desktopProducts"
-        class="mt-12 hidden scroll-mt-28 lg:block"
-    >
-
-        <div class="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-
-            <div class="flex items-center gap-3">
-
-                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-                    🎁
+<section id="desktopProducts" class="mt-12 hidden lg:block scroll-mt-28">
+        <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+            <div class="flex items-center justify-between gap-5">
+                <div class="flex min-w-0 items-center gap-4">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm ring-1 ring-slate-200">🎁</div>
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-black uppercase tracking-[0.18em] text-orange-600">First order offer</p>
+                        <h3 class="mt-1 text-lg font-black text-slate-950 sm:text-xl">Get 10% OFF on your first purchase</h3>
+                        <p class="mt-1 text-sm text-slate-500">Use coupon code <span class="font-extrabold text-emerald-700">FIRST10</span></p>
+                    </div>
                 </div>
-
-                <div>
-
-                    <p class="text-xs font-black uppercase tracking-wider text-emerald-600">
-                        Special Offer
-                    </p>
-
-                    <h3 class="mt-0.5 text-sm font-black text-slate-900">
-                        First Order Discount Available
-                    </h3>
-
-                </div>
-
+                <a href="#desktopProductGrid" class="hidden shrink-0 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-emerald-700 xl:inline-flex">Shop Now →</a>
             </div>
-
-
-            <span class="hidden rounded-full bg-white px-3 py-1.5 text-xs font-black text-emerald-700 shadow-sm sm:inline-flex">
-                Shop Now →
-            </span>
-
         </div>
 
+        <div class="mt-10 flex items-end justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-xl">🛍️</div>
+                    <div>
+                        <h2 class="text-2xl font-black tracking-tight text-slate-950 xl:text-3xl">Popular Products</h2>
+                        <p class="mt-1 text-sm text-slate-500">Popular products from nearby shops</p>
+                    </div>
+                </div>
+                <p id="desktopSearchMessage" class="mt-2 hidden text-xs font-bold text-emerald-700"></p>
+                <p id="desktopCategoryMessage" class="mt-2 hidden text-xs font-bold text-emerald-700"></p>
+            </div>
+            <button type="button" id="desktopResetProducts" class="hidden text-sm font-extrabold text-emerald-700 hover:text-emerald-800">Show All →</button>
+        </div>
 
-        <div class="mt-8 flex items-end justify-between gap-4">
+        <div id="desktopProductGrid" class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5">
+            @forelse($products as $product)
+                @php
+                    $hasDiscount = $product->discount_price && $product->discount_price < $product->price;
+                    $discountPercent = $hasDiscount ? round((($product->price - $product->discount_price) / $product->price) * 100) : 0;
+                @endphp
+                <article class="product-card group flex min-h-[400px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md" data-name="{{ strtolower($product->name) }}" data-category="{{ strtolower($product->category?->name ?? '') }}">
+                    <div class="relative p-2.5">
+                        @if($hasDiscount)
+                            <span class="absolute left-4 top-4 z-10 rounded-full bg-emerald-600 px-3 py-1.5 text-[10px] font-black text-white shadow-sm">{{ $discountPercent }}% OFF</span>
+                        @endif
+                        <button type="button" class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-lg text-slate-400 shadow-sm transition hover:text-rose-500" aria-label="Wishlist">♡</button>
+                        <a href="{{ route('product.show', $product->slug) }}" class="block">
+                            <div class="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-slate-50 px-4 py-4">
+                                <img src="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}" alt="{{ $product->name }}" class="h-full w-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';">
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-1 flex-col px-4 pb-4 pt-1">
+                        <div>
+    <span class="inline-flex max-w-full rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">
+        {{ $product->category?->name ?? 'Local Product' }}
+    </span>
+
+    <a href="{{ route('product.show', $product->slug) }}" class="mt-2 block min-h-[42px] line-clamp-2 text-[15px] font-extrabold leading-5 text-slate-900 transition hover:text-emerald-700">
+        {{ $product->name }}
+    </a>
+
+    {{-- Product Description --}}
+    @if(!empty($product->description))
+        <p class="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">
+            {{ $product->description }}
+        </p>
+    @endif
+
+    <div class="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        In Stock
+    </div>
+</div>
+
+                        <div class="mt-auto pt-4">
+                            <div class="flex items-end justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                                        <span class="text-xl font-black text-emerald-700">₹{{ number_format($product->discount_price ?? $product->price, 2) }}</span>
+                                        @if($hasDiscount)
+                                            <span class="text-xs font-medium text-slate-400 line-through">₹{{ number_format($product->price, 2) }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @auth
+                                    <form
+                                        action="{{ route('cart.add', $product) }}"
+                                        method="POST"
+                                        class="shrink-0 home-cart-form"
+                                        data-product-id="{{ $product->id }}"
+                                        data-product-name="{{ $product->name }}"
+                                        data-product-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
+                                    >
+                                        @csrf
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-xl bg-emerald-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-emerald-700 active:scale-95"
+                                        >
+                                            <span>🛒</span>
+                                            <span class="add-cart-text">Add to Cart</span>
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl bg-emerald-600 px-4 text-xs font-black text-white shadow-sm transition hover:bg-emerald-700"><span>🛒</span>Add to Cart</a>
+                                @endauth
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            @empty
+                <div class="col-span-full rounded-3xl border border-slate-200 bg-white p-12 text-center text-sm text-slate-500">No products available right now.</div>
+            @endforelse
+        </div>
+
+        <div class="mt-12 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="mb-5 flex items-end justify-between gap-4">
+                <div>
+                    <p class="text-[11px] font-black uppercase tracking-[0.18em] text-emerald-600">Around you</p>
+                    <h3 class="mt-1 text-2xl font-black text-slate-950">Local Shops</h3>
+                    <p class="mt-1 text-sm text-slate-500">Shops around you</p>
+                </div>
+                <span class="text-sm font-black text-emerald-700">View All →</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
+                @forelse($vendors->take(4) as $vendor)
+                    <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-emerald-200 hover:bg-emerald-50/30">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white ring-1 ring-slate-200">
+                            @if(!empty($vendor->image))
+                                <img src="{{ asset('storage/' . ltrim($vendor->image, '/')) }}" alt="{{ $vendor->shop_name ?? 'Local Shop' }}" class="h-10 w-10 rounded-xl object-cover" onerror="this.onerror=null;this.src='{{ asset('images/features/shop.png') }}';">
+                            @else
+                                <img src="{{ asset('images/features/shop.png') }}" alt="" class="h-8 w-8 object-contain">
+                            @endif
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-sm font-black text-slate-900">{{ $vendor->shop_name ?? 'Local Shop' }}</p>
+                            <p class="truncate text-xs text-slate-500">{{ $vendor->city ?? 'Local Store' }}</p>
+                            <p class="mt-1 text-xs text-slate-500">Local seller</p>
+                        </div>
+                        <span class="text-slate-400">›</span>
+                    </div>
+                @empty
+                    <div class="col-span-full py-8 text-center text-sm text-slate-500">No local shops available.</div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+<section
+        id="mobileProducts"
+        class="mt-8 scroll-mt-24 lg:hidden"
+    >
+
+        <div class="mb-4 flex items-end justify-between">
 
             <div>
 
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-600">
-                    Discover Products
-                </p>
-
-                <h2 class="mt-1 text-2xl font-black tracking-tight text-slate-900">
-                    Popular Products
+                <h2 class="text-xl font-extrabold">
+                    Popular Items
                 </h2>
 
-                <p class="mt-1 text-sm text-slate-500">
-                    Quality products from local shops near you.
-                </p>
+                <p
+                    id="mobileSearchMessage"
+                    class="mt-1 hidden text-xs font-medium text-emerald-700"
+                ></p>
+
+                <p
+                    id="mobileCategoryProductMessage"
+                    class="mt-1 hidden text-xs font-medium text-emerald-700"
+                ></p>
 
             </div>
 
 
             <button
-                id="desktopResetProducts"
                 type="button"
-                class="hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:border-emerald-300 hover:text-emerald-700"
+                id="mobileResetProducts"
+                class="hidden text-sm font-bold text-emerald-700"
             >
-                Reset Filters
+                Show All →
             </button>
 
         </div>
 
 
         <div
-            id="desktopSearchMessage"
-            class="mt-3 hidden rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
-        ></div>
-
-
-        <div
-            id="desktopCategoryMessage"
-            class="mt-2 hidden rounded-xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-600"
-        ></div>
-
-
-        <div
-            id="desktopProductGrid"
-            class="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5"
+            id="mobileProductGrid"
+            class="grid grid-cols-2 items-stretch gap-3"
         >
 
             @forelse($products as $product)
 
-                @php
-
-                    $hasDiscount =
-                        $product->discount_price &&
-                        $product->discount_price < $product->price;
-
-                    $discountPercent =
-                        $hasDiscount
-                            ? round(
-                                (($product->price - $product->discount_price)
-                                / $product->price) * 100
-                            )
-                            : 0;
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Rating UI
-                    |--------------------------------------------------------------------------
-                    */
-
-                    $rating = $product->rating ?? 4.5;
-
-                    $reviews = $product->reviews_count ?? 0;
-
-                    $rating = max(0, min(5, (float) $rating));
-
-                @endphp
-
-
-                <article
-                    class="product-card group flex min-h-[455px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl"
+                <div
+                    class="product-card-mobile group relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                     data-name="{{ strtolower($product->name) }}"
                     data-category="{{ strtolower($product->category?->name ?? '') }}"
                 >
 
+                    @if($loop->first)
 
-                    {{-- Product Image --}}
-                    <div class="relative h-56 overflow-hidden bg-slate-50">
+                        <span class="absolute left-2 top-2 z-10 rounded-lg bg-emerald-600 px-2 py-1 text-[10px] font-bold text-white shadow-sm">
+                            Bestseller
+                        </span>
 
-                        <a
-                            href="{{ route('product.show', $product->slug) }}"
-                            class="block h-full"
-                        >
-
-                            <img
-                                src="{{ $product->image ? asset($product->image) : asset('images/products/product-placeholder.png') }}"
-                                alt="{{ $product->name }}"
-                                class="h-full w-full object-contain p-5 transition duration-500 group-hover:scale-105"
-                                onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
-                            >
-
-                        </a>
+                    @endif
 
 
-                        @if($hasDiscount)
+                    <button
+                        type="button"
+                        class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-slate-100 bg-white/90 text-lg text-slate-400 shadow-sm transition hover:text-red-500"
+                        aria-label="Wishlist"
+                    >
+                        ♡
+                    </button>
+<a
+                        href="{{ route('product.show', $product->slug) }}"
+                        class="block"
+                    >
 
-                            <span class="absolute left-3 top-3 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-black text-white shadow-sm">
-                                {{ $discountPercent }}% OFF
-                            </span>
+                        <div class="flex h-36 shrink-0 items-center justify-center overflow-hidden bg-slate-50 p-3 sm:h-40">
 
-                        @endif
+                            @if(!empty($product->image))
 
-
-                        <button
-                            type="button"
-                            class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/80 bg-white/90 text-slate-500 shadow-sm backdrop-blur transition hover:scale-105 hover:text-red-500"
-                            aria-label="Add to wishlist"
-                        >
-                            ♡
-                        </button>
-
-
-                        {{-- Floating Rating --}}
-                        <div class="absolute bottom-3 left-3 flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1.5 shadow-md backdrop-blur">
-
-                            <span class="text-xs text-amber-400">
-                                ★
-                            </span>
-
-                            <span class="text-[11px] font-black text-slate-800">
-                                {{ number_format($rating, 1) }}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- Product Content --}}
-                    <div class="flex flex-1 flex-col px-4 pb-4 pt-3">
-
-                        <div class="flex-1">
-
-
-                            {{-- Category + Rating --}}
-                            <div class="flex items-center justify-between gap-2">
-
-                                <span class="max-w-[55%] truncate rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
-                                    {{ $product->category?->name ?? 'Local Product' }}
-                                </span>
-
-
-                                <div class="flex shrink-0 items-center gap-1">
-
-                                    <span class="text-[11px] tracking-tight text-amber-400">
-                                        ★★★★★
-                                    </span>
-
-                                    <span class="text-[10px] font-bold text-slate-700">
-                                        {{ number_format($rating, 1) }}
-                                    </span>
-
-                                    <span class="text-[10px] text-slate-400">
-                                        ({{ $reviews }})
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-
-                            {{-- Product Name --}}
-                            <a
-                                href="{{ route('product.show', $product->slug) }}"
-                                class="mt-2 block min-h-[42px] text-sm font-black leading-5 text-slate-900 transition hover:text-emerald-700"
-                            >
-                                {{ $product->name }}
-                            </a>
-
-
-
-                            {{-- Product Description --}}
-                            @if(!empty($product->description))
-
-                                <p class="mt-2 min-h-[40px] line-clamp-2 text-xs leading-5 text-slate-500">
-                                    {{ $product->description }}
-                                </p>
+                                <img
+                                    src="{{ asset('storage/' . ltrim($product->image, '/')) }}"
+                                    alt="{{ $product->name }}"
+                                    class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
+                                    onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
+                                >
 
                             @else
 
-                                <p class="mt-2 min-h-[40px] text-xs leading-5 text-slate-400">
-                                    Quality local product available for quick delivery.
-                                </p>
+                                <img
+                                    src="{{ asset('images/products/product-placeholder.png') }}"
+                                    alt="{{ $product->name }}"
+                                    class="h-28 w-28 object-contain"
+                                >
 
                             @endif
 
-
-
-                            {{-- Stock --}}
-                            <div class="mt-3 flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-
-                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-
-                                <span>
-                                    In Stock
-                                </span>
-
-                            </div>
-
                         </div>
 
+                    </a>
 
 
-                        {{-- Price --}}
-                        <div class="mt-4 flex items-end justify-between gap-3">
+                    <div class="flex flex-1 flex-col p-3">
+
+                        <a
+                            href="{{ route('product.show', $product->slug) }}"
+                            class="block truncate text-base font-bold text-slate-900 transition hover:text-emerald-700"
+                        >
+                            {{ $product->name }}
+                        </a>
+
+
+                        <p class="mt-1 truncate text-xs text-slate-500">
+                            {{ $product->category?->name ?? 'Local Product' }}
+                        </p>
+
+
+                        <div class="mt-auto flex items-end justify-between gap-2 pt-4">
 
                             <div>
 
-                                <div class="flex items-baseline gap-2">
+                                <p class="text-lg font-black text-slate-900">
+                                    ₹{{ number_format($product->discount_price ?? $product->price, 0) }}
+                                </p>
 
-                                    <span class="text-lg font-black text-slate-900">
-                                        ₹{{ number_format($hasDiscount ? $product->discount_price : $product->price, 2) }}
-                                    </span>
 
-                                    @if($hasDiscount)
+                                @if($product->discount_price && $product->discount_price < $product->price)
 
-                                        <span class="text-xs font-semibold text-slate-400 line-through">
-                                            ₹{{ number_format($product->price, 2) }}
-                                        </span>
-
-                                    @endif
-
-                                </div>
-
-                                @if($hasDiscount)
-
-                                    <p class="mt-0.5 text-[10px] font-bold text-emerald-600">
-                                        You save ₹{{ number_format($product->price - $product->discount_price, 2) }}
-                                    </p>
-
-                                @else
-
-                                    <p class="mt-0.5 text-[10px] text-slate-400">
-                                        Inclusive local pricing
+                                    <p class="text-xs text-slate-400 line-through">
+                                        ₹{{ number_format($product->price, 0) }}
                                     </p>
 
                                 @endif
@@ -1231,30 +1241,23 @@
                             @auth
 
                                 <form
-                                    action="{{ route('cart.add') }}"
+                                    action="{{ route('cart.add', $product) }}"
                                     method="POST"
                                     class="home-cart-form"
                                     data-product-id="{{ $product->id }}"
                                     data-product-name="{{ $product->name }}"
-                                    data-product-price="{{ $hasDiscount ? $product->discount_price : $product->price }}"
-                                    data-product-image="{{ $product->image ? asset($product->image) : asset('images/products/product-placeholder.png') }}"
+                                    data-product-price="{{ $product->discount_price ?? $product->price }}"
+                                    data-product-image="{{ !empty($product->image) ? asset('storage/' . ltrim($product->image, '/')) : asset('images/products/product-placeholder.png') }}"
                                 >
-
                                     @csrf
 
                                     <button
                                         type="submit"
-                                        class="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 text-xs font-black text-white shadow-sm transition hover:bg-emerald-700 hover:shadow-md"
+                                        class="inline-flex shrink-0 items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-emerald-700"
+                                        aria-label="Add {{ $product->name }} to cart"
                                     >
-
-                                        <span class="text-sm">
-                                            +
-                                        </span>
-
-                                        <span class="add-cart-text">
-                                            Add to Cart
-                                        </span>
-
+                                        🛒
+                                        <span class="add-cart-text">Add</span>
                                     </button>
 
                                 </form>
@@ -1263,9 +1266,9 @@
 
                                 <a
                                     href="{{ route('login') }}"
-                                    class="flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-3 text-xs font-black text-white transition hover:bg-emerald-700"
+                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-2xl font-medium text-white"
                                 >
-                                    Login to Buy
+                                    +
                                 </a>
 
                             @endauth
@@ -1274,527 +1277,236 @@
 
                     </div>
 
-                </article>
+                </div>
 
             @empty
 
-                <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-
-                    <div class="text-4xl">
-                        🛒
-                    </div>
-
-                    <h3 class="mt-3 text-base font-black text-slate-800">
-                        No products available
-                    </h3>
-
-                    <p class="mt-1 text-sm text-slate-500">
-                        Products from local shops will appear here.
-                    </p>
-
+                <div class="col-span-full rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                    No products available right now.
                 </div>
 
             @endforelse
 
-        </div>
 
+            <div
+                id="mobileNoSearchResults"
+                class="col-span-full hidden rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center"
+            >
 
-        {{-- Desktop Search Empty State --}}
-        <div
-            id="desktopNoSearchResults"
-            class="mt-5 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"
-        >
+                <div class="text-3xl">
+                    🔎
+                </div>
 
-            <div class="text-4xl">
-                🔍
+                <h3 class="mt-2 font-bold">
+                    No matching products
+                </h3>
+
+                <p class="mt-1 text-xs text-slate-500">
+                    Try another product name or category.
+                </p>
+
+                <button
+                    id="mobileClearSearchEmpty"
+                    type="button"
+                    class="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white"
+                >
+                    Show All Products
+                </button>
+
             </div>
-
-            <h3 class="mt-3 text-base font-black text-slate-800">
-                No products found
-            </h3>
-
-            <p class="mt-1 text-sm text-slate-500">
-                Try another product name or category.
-            </p>
 
         </div>
 
     </section>
-    {{-- =====================================================
-        MOBILE PRODUCTS
-    ====================================================== --}}
-
-    <section
-        id="mobileProducts"
-        class="mt-8 scroll-mt-24 lg:hidden"
-    >
-
-        <div class="flex items-end justify-between gap-3">
-
+<section class="mt-8">
+        <div class="flex items-end justify-between gap-4">
             <div>
-
-                <p class="text-[10px] font-black uppercase tracking-wider text-emerald-600">
-                    Nearby Products
-                </p>
-
-                <h2 class="mt-1 text-xl font-black tracking-tight text-slate-900">
-                    Popular Products
+                <h2 class="text-2xl font-extrabold text-slate-950 sm:text-3xl">
+                    Shop by Category
                 </h2>
-
-                <p class="mt-1 text-xs text-slate-500">
-                    Fresh products from local shops.
+                <p class="mt-1 text-sm text-slate-500">
+                    Everyday products, all in one place
                 </p>
-
             </div>
 
-
-            <button
-                id="mobileResetProducts"
-                type="button"
-                class="hidden rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-black text-slate-600 shadow-sm"
+            <a
+                href="#desktopProducts"
+                class="shrink-0 text-sm font-extrabold text-emerald-700 hover:text-emerald-800"
             >
-                Reset
-            </button>
-
+                View Products →
+            </a>
         </div>
 
-
-        <div
-            id="mobileSearchMessage"
-            class="mt-3 hidden rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-bold text-emerald-700"
-        ></div>
-
-
-        <div
-            id="mobileCategoryProductMessage"
-            class="mt-2 hidden rounded-xl bg-slate-100 px-3 py-2.5 text-xs font-bold text-slate-600"
-        ></div>
-
-
-        <div
-            id="mobileProductGrid"
-            class="mt-4 grid grid-cols-2 gap-3"
-        >
-
-            @forelse($products as $index => $product)
-
-                @php
-
-                    $hasDiscount =
-                        $product->discount_price &&
-                        $product->discount_price < $product->price;
-
-                    $discountPercent =
-                        $hasDiscount
-                            ? round(
-                                (($product->price - $product->discount_price)
-                                / $product->price) * 100
-                            )
-                            : 0;
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Rating
-                    |--------------------------------------------------------------------------
-                    */
-
-                    $rating = $product->rating ?? 4.5;
-
-                    $reviews = $product->reviews_count ?? 0;
-
-                    $rating = max(0, min(5, (float) $rating));
-
-                @endphp
-
-
-                <article
-                    class="product-card-mobile group flex min-h-[430px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 active:scale-[0.99]"
-                    data-name="{{ strtolower($product->name) }}"
-                    data-category="{{ strtolower($product->category?->name ?? '') }}"
-                >
-
-
-                    {{-- Product Image --}}
-                    <div class="relative h-44 overflow-hidden bg-slate-50">
-
-                        <a
-                            href="{{ route('product.show', $product->slug) }}"
-                            class="block h-full"
-                        >
-
+        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            @foreach($categoryOrder as $slug => $meta)
+                @php($category = $categoryMap->get($slug))
+                @if($category)
+                    <a
+                        href="{{ route('category', $category->slug) }}"
+                        class="group rounded-xl border border-slate-200 bg-white p-3 text-center transition hover:border-emerald-200 hover:bg-emerald-50/30"
+                    >
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 transition group-hover:bg-emerald-100">
                             <img
-                                src="{{ $product->image ? asset($product->image) : asset('images/products/product-placeholder.png') }}"
-                                alt="{{ $product->name }}"
-                                class="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105"
-                                onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
+                                src="{{ asset('images/categories/' . match($category->slug) {
+    'fast-food' => 'fast-food.png',
+    'fruits-vegetables' => 'vegetables.png',
+    'kirana' => 'grocery.png',
+    'dairy-products' => 'dairy.png',
+    'bakery' => 'bakery.png',
+    'medicines' => 'medicine.png',
+    'beverages' => 'beverages.png',
+    'household-essentials' => 'household.png',
+    default => 'grocery.png',
+}) }}"
+                                alt="{{ $category->name }}"
+                                class="h-11 w-11 object-contain"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
                             >
+                            <span class="hidden text-2xl">{{ $meta[0] }}</span>
+                        </div>
+                        <p class="mt-2 line-clamp-2 text-xs font-bold text-slate-700 group-hover:text-emerald-700">
+                            {{ $category->name }}
+                        </p>
+                    </a>
+                @endif
+            @endforeach
+        </div>
+    </section>
+<section class="mt-8 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:hidden">
 
-                        </a>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
 
+            @foreach([
+                ['images/features/delivery.png', 'Fast Delivery', 'At your doorstep'],
+                ['images/features/payment.png', 'Cash on Delivery', 'Safe payment'],
+                ['images/features/quality.png', 'Best Quality', '100% trusted'],
+                ['images/features/shop.png', 'Local Support', 'Always here for you'],
+            ] as $feature)
 
-                        {{-- Bestseller --}}
-                        @if($index === 0)
+                <div class="flex items-center gap-2">
 
-                            <span class="absolute left-2.5 top-2.5 rounded-full bg-amber-400 px-2 py-1 text-[9px] font-black text-slate-900 shadow-sm">
-                                🔥 Bestseller
-                            </span>
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50">
 
-                        @elseif($hasDiscount)
-
-                            <span class="absolute left-2.5 top-2.5 rounded-full bg-red-500 px-2 py-1 text-[9px] font-black text-white shadow-sm">
-                                {{ $discountPercent }}% OFF
-                            </span>
-
-                        @endif
-
-
-                        {{-- Wishlist --}}
-                        <button
-                            type="button"
-                            class="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full border border-white/80 bg-white/90 text-sm text-slate-500 shadow-sm backdrop-blur transition hover:text-red-500"
-                            aria-label="Add to wishlist"
+                        <img
+                            src="{{ asset($feature[0]) }}"
+                            alt=""
+                            class="h-7 w-7 object-contain"
                         >
-                            ♡
-                        </button>
-
-
-                        {{-- Rating Badge --}}
-                        <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 shadow-md">
-
-                            <span class="text-[10px] text-amber-400">
-                                ★
-                            </span>
-
-                            <span class="text-[10px] font-black text-slate-800">
-                                {{ number_format($rating, 1) }}
-                            </span>
-
-                        </div>
 
                     </div>
 
+                    <div class="min-w-0">
 
+                        <p class="truncate text-xs font-bold sm:text-sm">
+                            {{ $feature[1] }}
+                        </p>
 
-                    {{-- Product Content --}}
-                    <div class="flex flex-1 flex-col p-3">
-
-                        <div class="flex-1">
-
-
-                            {{-- Category --}}
-                            <div class="flex items-center justify-between gap-2">
-
-                                <span class="max-w-[65%] truncate rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-black text-emerald-700">
-                                    {{ $product->category?->name ?? 'Local Product' }}
-                                </span>
-
-                                <span class="shrink-0 text-[9px] font-semibold text-slate-400">
-                                    Local
-                                </span>
-
-                            </div>
-
-
-
-                            {{-- Product Name --}}
-                            <a
-                                href="{{ route('product.show', $product->slug) }}"
-                                class="mt-2 block min-h-[38px] text-sm font-black leading-[19px] text-slate-900 transition hover:text-emerald-700"
-                            >
-                                {{ $product->name }}
-                            </a>
-
-
-
-                            {{-- Rating + Reviews --}}
-                            <div class="mt-1.5 flex items-center gap-1.5">
-
-                                <span class="text-[11px] tracking-tight text-amber-400">
-                                    ★★★★★
-                                </span>
-
-                                <span class="text-[10px] font-black text-slate-700">
-                                    {{ number_format($rating, 1) }}
-                                </span>
-
-                                <span class="text-[10px] text-slate-400">
-                                    ({{ $reviews }})
-                                </span>
-
-                            </div>
-
-
-
-                            {{-- Description --}}
-                            @if(!empty($product->description))
-
-                                <p class="mt-2 min-h-[36px] line-clamp-2 text-[11px] leading-[18px] text-slate-500">
-                                    {{ $product->description }}
-                                </p>
-
-                            @else
-
-                                <p class="mt-2 min-h-[36px] text-[11px] leading-[18px] text-slate-400">
-                                    Quality local product available for quick delivery.
-                                </p>
-
-                            @endif
-
-
-
-                            {{-- Stock --}}
-                            <div class="mt-2.5 flex items-center gap-1.5">
-
-                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-
-                                <span class="text-[10px] font-semibold text-slate-500">
-                                    In Stock
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-
-                        {{-- Price + Cart --}}
-                        <div class="mt-3 border-t border-slate-100 pt-3">
-
-                            <div class="flex items-end justify-between gap-2">
-
-                                <div class="min-w-0">
-
-                                    <div class="flex flex-wrap items-baseline gap-1.5">
-
-                                        <span class="text-base font-black text-slate-900">
-                                            ₹{{ number_format($hasDiscount ? $product->discount_price : $product->price, 2) }}
-                                        </span>
-
-                                        @if($hasDiscount)
-
-                                            <span class="text-[10px] font-semibold text-slate-400 line-through">
-                                                ₹{{ number_format($product->price, 2) }}
-                                            </span>
-
-                                        @endif
-
-                                    </div>
-
-                                    @if($hasDiscount)
-
-                                        <p class="mt-0.5 text-[9px] font-bold text-emerald-600">
-                                            Save ₹{{ number_format($product->price - $product->discount_price, 2) }}
-                                        </p>
-
-                                    @endif
-
-                                </div>
-
-
-                                @auth
-
-                                    <form
-                                        action="{{ route('cart.add') }}"
-                                        method="POST"
-                                        class="home-cart-form shrink-0"
-                                        data-product-id="{{ $product->id }}"
-                                        data-product-name="{{ $product->name }}"
-                                        data-product-price="{{ $hasDiscount ? $product->discount_price : $product->price }}"
-                                        data-product-image="{{ $product->image ? asset($product->image) : asset('images/products/product-placeholder.png') }}"
-                                    >
-
-                                        @csrf
-
-                                        <button
-                                            type="submit"
-                                            class="flex h-9 items-center justify-center gap-1 rounded-xl bg-emerald-600 px-3 text-[10px] font-black text-white shadow-sm transition hover:bg-emerald-700"
-                                        >
-
-                                            <span class="text-sm">
-                                                +
-                                            </span>
-
-                                            <span class="add-cart-text">
-                                                Add
-                                            </span>
-
-                                        </button>
-
-                                    </form>
-
-                                @else
-
-                                    <a
-                                        href="{{ route('login') }}"
-                                        class="flex h-9 items-center justify-center rounded-xl bg-emerald-600 px-3 text-[10px] font-black text-white"
-                                    >
-                                        Login
-                                    </a>
-
-                                @endauth
-
-                            </div>
-
-                        </div>
+                        <p class="truncate text-[10px] text-slate-500 sm:text-xs">
+                            {{ $feature[2] }}
+                        </p>
 
                     </div>
-
-                </article>
-
-            @empty
-
-                <div class="col-span-2 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-
-                    <div class="text-3xl">
-                        🛒
-                    </div>
-
-                    <h3 class="mt-2 text-sm font-black text-slate-800">
-                        No products available
-                    </h3>
-
-                    <p class="mt-1 text-xs text-slate-500">
-                        Local products will appear here.
-                    </p>
 
                 </div>
 
-            @endforelse
+            @endforeach
 
         </div>
 
+    </section>
+<section class="mt-7 hidden grid-cols-3 items-center gap-4 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm lg:grid lg:px-8">
 
-        {{-- Mobile Search Empty State --}}
-        <div
-            id="mobileNoSearchResults"
-            class="mt-4 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center"
-        >
+        <div class="flex items-center gap-3">
 
-            <div class="text-3xl">
-                🔍
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white">
+                ▣
             </div>
 
-            <h3 class="mt-2 text-sm font-black text-slate-800">
-                No products found
-            </h3>
+            <div>
 
-            <p class="mt-1 text-xs text-slate-500">
-                Try another product name or category.
-            </p>
+                <p class="font-bold">
+                    Apna Local Bazaar App
+                </p>
 
-            <button
-                id="mobileClearSearchEmpty"
-                type="button"
-                class="mt-4 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white"
-            >
-                Clear Search
-            </button>
+                <p class="text-xs text-slate-500">
+                    We are working on the app.
+                </p>
+
+            </div>
 
         </div>
 
 
         <button
-            id="mobileFilterReset"
             type="button"
-            class="mx-auto mt-4 hidden rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-600 shadow-sm"
+            class="mx-auto rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700"
         >
-            Reset Filters
+            Coming Soon
         </button>
 
-    </section>
 
+        <div class="flex items-center justify-end gap-3">
 
-
-    {{-- =====================================================
-        SHOP BY CATEGORY
-    ====================================================== --}}
-
-    <section class="mt-8">
-
-        <div class="flex items-end justify-between">
+            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50">
+                ?
+            </div>
 
             <div>
 
-                <p class="text-[10px] font-black uppercase tracking-wider text-emerald-600">
-                    Explore More
+                <p class="font-bold">
+                    Need Help?
                 </p>
 
-                <h2 class="mt-1 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
-                    Shop by Category
-                </h2>
-
-                <p class="mt-1 text-xs text-slate-500 sm:text-sm">
-                    Find everything you need from nearby stores.
+                <p class="text-xs text-slate-500">
+                    Need help with your order?
                 </p>
 
             </div>
 
         </div>
 
+    </section>
+<section class="mt-8 hidden lg:block">
 
-        <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-
-            @foreach($categoryOrder as $slug => [$icon, $label])
-
-                @php
-                    $category = $categoryMap->get($slug);
-
-                    $categoryImage = match($slug) {
-                        'fast-food' => 'fast-food.png',
-                        'fruits-vegetables' => 'vegetables.png',
-                        'kirana' => 'grocery.png',
-                        'dairy-products' => 'dairy.png',
-                        'bakery' => 'bakery.png',
-                        'medicines' => 'medicine.png',
-                        'beverages' => 'beverages.png',
-                        'household-essentials' => 'household.png',
-                        default => 'grocery.png',
-                    };
-                @endphp
+        <h2 class="text-2xl font-extrabold">
+            Why shop with us?
+        </h2>
 
 
-                @if($category)
+        <div class="mt-4 grid gap-4 lg:grid-cols-4">
 
-                    <a
-                        href="{{ route('category.show', $category->slug) }}"
-                        class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-lg"
-                    >
+            @foreach([
+                ['images/features/delivery.png', 'Fast Delivery', 'Quick doorstep delivery'],
+                ['images/features/quality.png', 'Best Quality', 'Fresh and trusted products'],
+                ['images/features/shop.png', 'Local Support', 'Support local businesses'],
+                ['images/features/payment.png', 'Secure Payment', 'Simple and reliable checkout'],
+            ] as $item)
 
-                        <div class="relative h-28 overflow-hidden bg-slate-50">
+                <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
 
-                            <img
-                                src="{{ asset('images/categories/' . $categoryImage) }}"
-                                alt="{{ $label }}"
-                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                                onerror="this.onerror=null;this.src='{{ asset('images/products/product-placeholder.png') }}';"
-                            >
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50">
 
+                        <img
+                            src="{{ asset($item[0]) }}"
+                            alt=""
+                            class="h-9 w-9 object-contain"
+                        >
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent"></div>
+                    </div>
 
+                    <div>
 
-                            <span class="absolute bottom-2 left-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 text-lg shadow-sm">
-                                {{ $icon }}
-                            </span>
+                        <p class="font-bold">
+                            {{ $item[1] }}
+                        </p>
 
-                        </div>
+                        <p class="mt-1 text-xs text-slate-500">
+                            {{ $item[2] }}
+                        </p>
 
+                    </div>
 
-                        <div class="flex items-center justify-between gap-2 p-3">
-
-                            <span class="truncate text-xs font-black text-slate-800 group-hover:text-emerald-700">
-                                {{ $label }}
-                            </span>
-
-                            <span class="shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-emerald-500">
-                                →
-                            </span>
-
-                        </div>
-
-                    </a>
-
-                @endif
+                </div>
 
             @endforeach
 
@@ -1802,687 +1514,190 @@
 
     </section>
 
-
-
-    {{-- =====================================================
-        MOBILE FEATURES
-    ====================================================== --}}
-
-    <section class="mt-8 lg:hidden">
-
-        <div class="grid grid-cols-2 gap-3">
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-lg">
-                    🚚
-                </div>
-
-                <h3 class="mt-3 text-xs font-black text-slate-800">
-                    Fast Delivery
-                </h3>
-
-                <p class="mt-1 text-[10px] leading-4 text-slate-500">
-                    Quick delivery from local shops.
-                </p>
-
-            </div>
-
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg">
-                    💵
-                </div>
-
-                <h3 class="mt-3 text-xs font-black text-slate-800">
-                    Cash on Delivery
-                </h3>
-
-                <p class="mt-1 text-[10px] leading-4 text-slate-500">
-                    Pay when your order arrives.
-                </p>
-
-            </div>
-
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-lg">
-                    ⭐
-                </div>
-
-                <h3 class="mt-3 text-xs font-black text-slate-800">
-                    Best Quality
-                </h3>
-
-                <p class="mt-1 text-[10px] leading-4 text-slate-500">
-                    Products from trusted sellers.
-                </p>
-
-            </div>
-
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-lg">
-                    🏪
-                </div>
-
-                <h3 class="mt-3 text-xs font-black text-slate-800">
-                    Local Shops
-                </h3>
-
-                <p class="mt-1 text-[10px] leading-4 text-slate-500">
-                    Support businesses near you.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    {{-- =====================================================
-        APP COMING SOON + HELP
-    ====================================================== --}}
-
-    <section class="mt-10 hidden gap-6 lg:grid lg:grid-cols-2">
-
-        {{-- App --}}
-        <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-white">
-
-            <div class="relative z-10 max-w-lg">
-
-                <span class="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-emerald-300">
-                    Coming Soon
-                </span>
-
-                <h2 class="mt-4 text-3xl font-black leading-tight">
-                    Apna Local Bazaar
-                    <br>
-                    Mobile App
-                </h2>
-
-                <p class="mt-3 text-sm leading-6 text-white/70">
-                    Shop from your favourite local stores even faster with our upcoming mobile application.
-                </p>
-
-
-                <div class="mt-6 flex gap-3">
-
-                    <div class="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-3">
-
-                        <span class="text-xl">
-                            ▶
-                        </span>
-
-                        <div>
-
-                            <p class="text-[9px] uppercase tracking-wide text-white/50">
-                                Coming soon on
-                            </p>
-
-                            <p class="text-xs font-black">
-                                Google Play
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-3">
-
-                        <span class="text-xl">
-                            
-                        </span>
-
-                        <div>
-
-                            <p class="text-[9px] uppercase tracking-wide text-white/50">
-                                Coming soon on
-                            </p>
-
-                            <p class="text-xs font-black">
-                                App Store
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl"></div>
-
-        </div>
-
-
-
-        {{-- Help --}}
-        <div class="rounded-3xl border border-slate-200 bg-white p-8">
-
-            <span class="text-xs font-black uppercase tracking-wider text-emerald-600">
-                Need Help?
-            </span>
-
-            <h2 class="mt-2 text-2xl font-black text-slate-900">
-                We're here for you.
-            </h2>
-
-            <p class="mt-2 max-w-lg text-sm leading-6 text-slate-500">
-                Have a question about an order, product or delivery? Our support team is ready to help.
-            </p>
-
-
-            <div class="mt-6 grid grid-cols-2 gap-3">
-
-                <a
-                    href="#"
-                    class="rounded-2xl border border-slate-200 p-4 transition hover:border-emerald-200 hover:bg-emerald-50"
-                >
-
-                    <div class="text-xl">
-                        💬
-                    </div>
-
-                    <h3 class="mt-2 text-sm font-black">
-                        Contact Support
-                    </h3>
-
-                    <p class="mt-1 text-xs text-slate-500">
-                        Get assistance
-                    </p>
-
-                </a>
-
-
-                <a
-                    href="#"
-                    class="rounded-2xl border border-slate-200 p-4 transition hover:border-emerald-200 hover:bg-emerald-50"
-                >
-
-                    <div class="text-xl">
-                        ❓
-                    </div>
-
-                    <h3 class="mt-2 text-sm font-black">
-                        FAQs
-                    </h3>
-
-                    <p class="mt-1 text-xs text-slate-500">
-                        Find answers
-                    </p>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    {{-- =====================================================
-        WHY SHOP WITH US
-    ====================================================== --}}
-
-    <section class="mt-10 hidden lg:block">
-
-        <div class="text-center">
-
-            <p class="text-xs font-black uppercase tracking-wider text-emerald-600">
-                Why Choose Us
-            </p>
-
-            <h2 class="mt-2 text-2xl font-black text-slate-900">
-                Why Shop With Us?
-            </h2>
-
-            <p class="mx-auto mt-2 max-w-2xl text-sm text-slate-500">
-                A simple and convenient way to support local businesses while getting quality products delivered to you.
-            </p>
-
-        </div>
-
-
-        <div class="mt-7 grid grid-cols-3 gap-5">
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">
-                    🏪
-                </div>
-
-                <h3 class="mt-4 text-base font-black">
-                    Local & Trusted
-                </h3>
-
-                <p class="mt-2 text-xs leading-5 text-slate-500">
-                    Discover products from nearby shops and local sellers.
-                </p>
-
-            </div>
-
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
-                    🚚
-                </div>
-
-                <h3 class="mt-4 text-base font-black">
-                    Convenient Delivery
-                </h3>
-
-                <p class="mt-2 text-xs leading-5 text-slate-500">
-                    Get your everyday essentials delivered right to your doorstep.
-                </p>
-
-            </div>
-
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl">
-                    ❤️
-                </div>
-
-                <h3 class="mt-4 text-base font-black">
-                    Support Local
-                </h3>
-
-                <p class="mt-2 text-xs leading-5 text-slate-500">
-                    Every purchase helps local shops and businesses grow.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    {{-- =====================================================
-        HOME QUICK CART
-    ====================================================== --}}
-
-    @auth
-
+{{-- =========================================================
+    HOME QUICK CART
+========================================================= --}}
+
+@auth
+
+<div
+    id="homeQuickCart"
+    class="fixed inset-x-0 bottom-[68px] z-[55] hidden lg:bottom-0"
+>
+    <div class="mx-auto max-w-[1440px] px-2 pb-2 sm:px-4 lg:px-8 lg:pb-3">
+
+        {{-- SELECTED PRODUCTS --}}
         <div
-            id="homeQuickCart"
-            class="fixed bottom-5 left-1/2 z-40 hidden w-[calc(100%-2rem)] max-w-4xl -translate-x-1/2 lg:bottom-6"
-        >
+            id="homeQuickCartProducts"
+            class="mb-2 flex gap-2 overflow-x-auto rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-lg backdrop-blur-xl"
+        ></div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-2xl backdrop-blur">
+        {{-- CART SUMMARY --}}
+        <div class="flex items-center gap-3 rounded-2xl bg-emerald-600 px-3 py-2.5 text-white shadow-[0_8px_30px_rgba(16,185,129,0.30)] sm:px-4 sm:py-3">
 
-                <div class="flex items-center gap-3">
-
-                    {{-- Products --}}
-                    <div
-                        id="homeQuickCartProducts"
-                        class="flex min-w-0 flex-1 gap-2 overflow-x-auto"
-                    ></div>
-
-
-                    {{-- Cart Summary --}}
-                    <div class="flex shrink-0 items-center gap-3 border-l border-slate-200 pl-3">
-
-                        <div class="hidden text-right sm:block">
-
-                            <p
-                                id="homeQuickCartCount"
-                                class="text-xs font-black text-slate-800"
-                            >
-                                0 items
-                            </p>
-
-                            <p class="mt-0.5 text-[10px] text-slate-400">
-                                Quick Cart
-                            </p>
-
-                        </div>
-
-
-                        <div class="text-right">
-
-                            <p
-                                id="homeQuickCartTotal"
-                                class="text-sm font-black text-slate-900"
-                            >
-                                ₹0.00
-                            </p>
-
-                            <a
-                                href="{{ route('cart.index') }}"
-                                class="mt-1 inline-flex text-[10px] font-black text-emerald-600 hover:text-emerald-700"
-                            >
-                                View Cart →
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl sm:h-11 sm:w-11">
+                🛒
             </div>
+
+            <div class="min-w-0 flex-1">
+                <p id="homeQuickCartCount" class="text-xs font-black sm:text-sm">
+                    0 items
+                </p>
+
+                <p id="homeQuickCartTotal" class="mt-0.5 text-sm font-black sm:text-base">
+                    ₹0.00
+                </p>
+            </div>
+
+            <a
+                href="{{ route('cart.index') }}"
+                class="flex shrink-0 items-center gap-1 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-emerald-700 shadow-sm transition hover:bg-emerald-50 active:scale-95 sm:px-5 sm:text-sm"
+            >
+                View Cart
+                <span class="text-base">→</span>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+@endauth
+
+</main>
+<footer class="mt-10 hidden border-t border-slate-200 bg-slate-950 text-white lg:block">
+
+    <div class="mx-auto grid max-w-[1440px] gap-8 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+
+        <div>
+
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="Apna Local Bazaar"
+                class="h-12 rounded-lg bg-white p-1"
+            >
+
+            <p class="mt-4 text-sm leading-6 text-slate-400">
+                A simple place to buy everyday products from local shops.
+            </p>
 
         </div>
 
-    @endauth
 
+        <div>
 
+            <h3 class="font-bold">
+                Quick Links
+            </h3>
 
-    {{-- =====================================================
-        FOOTER
-    ====================================================== --}}
+            <div class="mt-4 space-y-2 text-sm text-slate-400">
 
-    <footer class="mt-12 overflow-hidden rounded-3xl bg-slate-950 text-white">
+                <a
+                    href="#desktopProducts"
+                    class="block transition hover:text-white"
+                >
+                    Popular Products
+                </a>
 
-        <div class="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:p-10">
-
-            {{-- Brand --}}
-            <div>
+                <a
+                    href="#mobileCategories"
+                    class="block transition hover:text-white"
+                >
+                    Categories
+                </a>
 
                 <a
                     href="{{ route('home') }}"
-                    class="inline-flex items-center gap-3"
+                    class="block transition hover:text-white"
                 >
-
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-xl">
-                        🛍️
-                    </div>
-
-                    <div>
-
-                        <h2 class="text-base font-black">
-                            Apna Local Bazaar
-                        </h2>
-
-                        <p class="mt-0.5 text-[10px] text-slate-400">
-                            Shop Local • Live Local
-                        </p>
-
-                    </div>
-
+                    Home
                 </a>
 
+            </div>
 
-                <p class="mt-4 max-w-sm text-xs leading-6 text-slate-400">
-                    Your local marketplace for everyday products, trusted shops and convenient doorstep delivery.
+        </div>
+
+
+        <div>
+
+            <h3 class="font-bold">
+                Customer Support
+            </h3>
+
+            <div class="mt-4 space-y-2 text-sm text-slate-400">
+
+                <p>
+                    Help Center
                 </p>
 
+                <p>
+                    Contact Us
+                </p>
 
-                <div class="mt-5 flex items-center gap-2">
-
-                    <a
-                        href="#"
-                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-sm transition hover:bg-emerald-600"
-                        aria-label="Facebook"
-                    >
-                        f
-                    </a>
-
-                    <a
-                        href="#"
-                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-sm transition hover:bg-emerald-600"
-                        aria-label="Instagram"
-                    >
-                        ◎
-                    </a>
-
-                    <a
-                        href="#"
-                        class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-sm transition hover:bg-emerald-600"
-                        aria-label="Twitter"
-                    >
-                        𝕏
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            {{-- Quick Links --}}
-            <div>
-
-                <h3 class="text-xs font-black uppercase tracking-wider text-white">
-                    Quick Links
-                </h3>
-
-                <div class="mt-4 space-y-3">
-
-                    <a
-                        href="{{ route('home') }}"
-                        class="block text-xs text-slate-400 transition hover:text-emerald-400"
-                    >
-                        Home
-                    </a>
-
-                    @auth
-
-                        <a
-                            href="{{ route('orders.index') }}"
-                            class="block text-xs text-slate-400 transition hover:text-emerald-400"
-                        >
-                            My Orders
-                        </a>
-
-                        <a
-                            href="{{ route('cart.index') }}"
-                            class="block text-xs text-slate-400 transition hover:text-emerald-400"
-                        >
-                            My Cart
-                        </a>
-
-                    @endauth
-
-                </div>
-
-            </div>
-
-
-            {{-- Categories --}}
-            <div>
-
-                <h3 class="text-xs font-black uppercase tracking-wider text-white">
-                    Categories
-                </h3>
-
-                <div class="mt-4 space-y-3">
-
-                    @foreach(array_slice($categoryOrder, 0, 5, true) as $slug => [$icon, $label])
-
-                        @php
-                            $category = $categoryMap->get($slug);
-                        @endphp
-
-                        @if($category)
-
-                            <a
-                                href="{{ route('category.show', $category->slug) }}"
-                                class="flex items-center gap-2 text-xs text-slate-400 transition hover:text-emerald-400"
-                            >
-                                <span>{{ $icon }}</span>
-                                <span>{{ $label }}</span>
-                            </a>
-
-                        @endif
-
-                    @endforeach
-
-                </div>
-
-            </div>
-
-
-            {{-- Contact --}}
-            <div>
-
-                <h3 class="text-xs font-black uppercase tracking-wider text-white">
-                    Contact
-                </h3>
-
-                <div class="mt-4 space-y-4">
-
-                    <div class="flex gap-3">
-
-                        <span class="text-sm">
-                            📍
-                        </span>
-
-                        <p class="text-xs leading-5 text-slate-400">
-                            Chandigarh, Punjab
-                            <br>
-                            India
-                        </p>
-
-                    </div>
-
-
-                    <div class="flex gap-3">
-
-                        <span class="text-sm">
-                            📧
-                        </span>
-
-                        <p class="text-xs text-slate-400">
-                            support@apnalocalbazaar.com
-                        </p>
-
-                    </div>
-
-
-                    <div class="flex gap-3">
-
-                        <span class="text-sm">
-                            📞
-                        </span>
-
-                        <p class="text-xs text-slate-400">
-                            Customer Support
-                        </p>
-
-                    </div>
-
-                </div>
+                <p>
+                    Privacy Policy
+                </p>
 
             </div>
 
         </div>
 
 
-        <div class="border-t border-white/10 px-6 py-5 sm:px-8 lg:px-10">
+        <div>
 
-            <div class="flex flex-col gap-2 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <h3 class="font-bold">
+                App
+            </h3>
 
-                <p class="text-[10px] text-slate-500">
-                    © {{ date('Y') }} Apna Local Bazaar. All rights reserved.
-                </p>
+            <p class="mt-4 text-sm text-slate-400">
+                App is coming soon.
+            </p>
 
-                <p class="text-[10px] text-slate-500">
-                    Made with ❤️ for local businesses.
-                </p>
-
-            </div>
+            <button
+                type="button"
+                class="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold transition hover:bg-emerald-700"
+            >
+                Coming Soon
+            </button>
 
         </div>
 
-    </footer>
-
-</main>
+    </div>
 
 
+    <div class="border-t border-white/10 py-4 text-center text-xs text-slate-500">
+        © {{ date('Y') }} Apna Local Bazaar. All rights reserved.
+    </div>
 
-{{-- =========================================================
-    MOBILE BOTTOM NAVIGATION
-========================================================= --}}
+</footer>
+<nav class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-2 pt-2 shadow-[0_-6px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl lg:hidden">
 
-<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur lg:hidden">
-
-    <div class="mx-auto flex max-w-md items-center justify-around">
+    <div class="mx-auto grid max-w-lg grid-cols-4">
 
         <a
             href="{{ route('home') }}"
-            class="flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-emerald-600"
+            class="flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-emerald-600"
         >
-
-            <span class="text-lg">
-                🏠
+            <span class="text-xl leading-none">
+                ⌂
             </span>
 
-            <span class="text-[9px] font-black">
+            <span class="text-[10px] font-bold">
                 Home
             </span>
-
         </a>
 
 
-        <button
-            type="button"
-            onclick="document.getElementById('mobileCategories')?.scrollIntoView({behavior:'smooth',block:'start'})"
-            class="flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-slate-500"
+        <a
+            href="#mobileCategories"
+            class="flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-500"
         >
-
-            <span class="text-lg">
-                🗂️
+            <span class="text-xl leading-none">
+                ▦
             </span>
 
-            <span class="text-[9px] font-black">
+            <span class="text-[10px] font-semibold">
                 Categories
             </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            onclick="document.getElementById('mobileProducts')?.scrollIntoView({behavior:'smooth',block:'start'})"
-            class="flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-slate-500"
-        >
-
-            <span class="text-lg">
-                🛍️
-            </span>
-
-            <span class="text-[9px] font-black">
-                Products
-            </span>
-
-        </button>
-
-
-        <a
-            href="{{ route('cart.index') }}"
-            class="relative flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-slate-500"
-        >
-
-            <span class="relative text-lg">
-
-                🛒
-
-                <span
-                    id="mobileCartCount"
-                    class="absolute -right-3 -top-2 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-emerald-600 px-1 text-[8px] font-black text-white"
-                >
-                    {{ $cartCount }}
-                </span>
-
-            </span>
-
-            <span class="text-[9px] font-black">
-                Cart
-            </span>
-
         </a>
 
 
@@ -2490,15 +1705,36 @@
 
             <a
                 href="{{ route('orders.index') }}"
-                class="flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-slate-500"
+                class="flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-500"
             >
-
-                <span class="text-lg">
-                    📦
+                <span class="text-xl leading-none">
+                    ▤
                 </span>
 
-                <span class="text-[9px] font-black">
+                <span class="text-[10px] font-semibold">
                     Orders
+                </span>
+            </a>
+
+
+            <a
+                href="{{ route('cart.index') }}"
+                class="relative flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-500"
+            >
+
+                <span class="text-xl leading-none">
+                    🛒
+                </span>
+
+                <span
+                    id="mobileCartCount"
+                    class="absolute right-4 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-bold text-white"
+                >
+                    {{ $cartCount }}
+                </span>
+
+                <span class="text-[10px] font-semibold">
+                    Cart
                 </span>
 
             </a>
@@ -2507,15 +1743,31 @@
 
             <a
                 href="{{ route('login') }}"
-                class="flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-slate-500"
+                class="flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-500"
             >
 
-                <span class="text-lg">
-                    👤
+                <span class="text-xl leading-none">
+                    ◯
                 </span>
 
-                <span class="text-[9px] font-black">
+                <span class="text-[10px] font-semibold">
                     Login
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ route('login') }}"
+                class="flex flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-500"
+            >
+
+                <span class="text-xl leading-none">
+                    🛒
+                </span>
+
+                <span class="text-[10px] font-semibold">
+                    Cart
                 </span>
 
             </a>
@@ -2527,24 +1779,15 @@
 </nav>
 
 
-
 <div class="h-20 lg:hidden"></div>
-
-
-
 <script>
 
 document.addEventListener('DOMContentLoaded', () => {
 
 
-    /* =====================================================
-       CUSTOMER LOCATION
-    ===================================================== */
-
     const locationButtons = document.querySelectorAll(
         '.customer-location-button'
     );
-
 
     const saveCustomerLocation = async (latitude, longitude) => {
 
@@ -2568,17 +1811,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             );
 
-
             const data = await response.json();
-
 
             if (!response.ok || !data.success) {
                 throw new Error('Unable to save location.');
             }
 
-
             window.location.reload();
-
 
         } catch (error) {
 
@@ -2598,13 +1837,9 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
 
             @guest
-
                 window.location.href = '{{ route('login') }}';
-
                 return;
-
             @endguest
-
 
             if (!navigator.geolocation) {
 
@@ -2613,47 +1848,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
                 return;
-
             }
-
 
             const textElement =
-                button.querySelector(
-                    '#desktopLocationText, #mobileLocationText'
-                );
-
+                button.querySelector('#desktopLocationText, #mobileLocationText');
 
             if (textElement) {
-
-                textElement.textContent =
-                    'Getting location...';
-
+                textElement.textContent = 'Getting location...';
             }
 
-
             button.disabled = true;
-
 
             button.classList.add(
                 'cursor-not-allowed',
                 'opacity-70'
             );
 
-
             navigator.geolocation.getCurrentPosition(
 
                 async (position) => {
 
                     const latitude =
-                        Number(
-                            position.coords.latitude
-                        );
+                        Number(position.coords.latitude);
 
                     const longitude =
-                        Number(
-                            position.coords.longitude
-                        );
-
+                        Number(position.coords.longitude);
 
                     await saveCustomerLocation(
                         latitude,
@@ -2662,28 +1881,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 },
 
-
                 (error) => {
 
                     console.error(error);
 
-
                     button.disabled = false;
-
 
                     button.classList.remove(
                         'cursor-not-allowed',
                         'opacity-70'
                     );
 
-
                     if (textElement) {
-
-                        textElement.textContent =
-                            'Select Location';
-
+                        textElement.textContent = 'Select Location';
                     }
-
 
                     if (error.code === 1) {
 
@@ -2713,7 +1924,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 },
 
-
                 {
                     enableHighAccuracy: true,
                     timeout: 10000,
@@ -2727,22 +1937,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
-    /* =====================================================
-       MOBILE MENU
-    ===================================================== */
-
     const mobileMenu =
         document.getElementById('mobileMenu');
-
 
     const mobileMenuButton =
         document.getElementById('mobileMenuButton');
 
-
     const closeMobileMenu =
         document.getElementById('closeMobileMenu');
-
 
     const mobileMenuOverlay =
         document.getElementById('mobileMenuOverlay');
@@ -2784,11 +1986,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
 
-
-    /* =====================================================
-       DESKTOP HERO SLIDER
-    ===================================================== */
-
     const createDesktopSlider = () => {
 
         const slides =
@@ -2796,18 +1993,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 '.hero-slide-desktop'
             );
 
-
         const dots =
             document.querySelectorAll(
                 '.desktop-slider-dot'
             );
 
-
         const previous =
             document.getElementById(
                 'prevSlideDesktop'
             );
-
 
         const next =
             document.getElementById(
@@ -2821,7 +2015,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         let current = 0;
-
         let timer;
 
 
@@ -2878,11 +2071,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             clearInterval(timer);
 
-
             timer = setInterval(() => {
-
                 showSlide(current + 1);
-
             }, 4500);
 
         };
@@ -2929,16 +2119,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         showSlide(0);
-
         restart();
 
     };
 
-
-
-    /* =====================================================
-       MOBILE HERO SLIDER
-    ===================================================== */
 
     const createMobileSlider = () => {
 
@@ -2947,18 +2131,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 '.hero-slide-mobile'
             );
 
-
         const dots =
             document.querySelectorAll(
                 '.mobile-slider-dot'
             );
 
-
         const previous =
             document.getElementById(
                 'prevSlideMobile'
             );
-
 
         const next =
             document.getElementById(
@@ -2972,7 +2153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         let current = 0;
-
         let timer;
 
 
@@ -3029,11 +2209,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             clearInterval(timer);
 
-
             timer = setInterval(() => {
-
                 showSlide(current + 1);
-
             }, 4500);
 
         };
@@ -3063,56 +2240,30 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
 
-        dots.forEach((dot, index) => {
-
-            dot.addEventListener(
-                'click',
-                () => {
-
-                    showSlide(index);
-
-                    restart();
-
-                }
-            );
-
-        });
-
-
         showSlide(0);
-
         restart();
 
     };
 
 
     createDesktopSlider();
-
     createMobileSlider();
 
-
-
-    /* =====================================================
-       PRODUCT SEARCH + FILTER
-    ===================================================== */
 
     const desktopSearch =
         document.getElementById(
             'desktopProductSearch'
         );
 
-
     const mobileSearch =
         document.getElementById(
             'mobileProductSearch'
         );
 
-
     const desktopSearchButton =
         document.getElementById(
             'desktopSearchButton'
         );
-
 
     const mobileSearchButton =
         document.getElementById(
@@ -3126,7 +2277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         )
     ];
 
-
     const mobileProducts = [
         ...document.querySelectorAll(
             '#mobileProductGrid .product-card-mobile'
@@ -3139,7 +2289,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'desktopSearchMessage'
         );
 
-
     const mobileMessage =
         document.getElementById(
             'mobileSearchMessage'
@@ -3151,7 +2300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'desktopCategoryMessage'
         );
 
-
     const mobileCategoryMessage =
         document.getElementById(
             'mobileCategoryProductMessage'
@@ -3162,7 +2310,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(
             'desktopResetProducts'
         );
-
 
     const mobileReset =
         document.getElementById(
@@ -3195,9 +2342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     let currentSearch = '';
-
     let currentCategory = '';
-
 
 
     const syncSearchInputs = (value) => {
@@ -3206,7 +2351,6 @@ document.addEventListener('DOMContentLoaded', () => {
             desktopSearch.value = value;
         }
 
-
         if (mobileSearch) {
             mobileSearch.value = value;
         }
@@ -3214,12 +2358,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-
     const matchesProduct = (card) => {
 
         const name =
             (card.dataset.name || '').toLowerCase();
-
 
         const category =
             (card.dataset.category || '').toLowerCase();
@@ -3242,25 +2384,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-
     const applyFilters = () => {
 
         let desktopCount = 0;
-
         let mobileCount = 0;
 
 
         desktopProducts.forEach((card) => {
 
-            const matches =
-                matchesProduct(card);
-
+            const matches = matchesProduct(card);
 
             card.classList.toggle(
                 'hidden',
                 !matches
             );
-
 
             if (matches) {
                 desktopCount++;
@@ -3271,15 +2408,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mobileProducts.forEach((card) => {
 
-            const matches =
-                matchesProduct(card);
-
+            const matches = matchesProduct(card);
 
             card.classList.toggle(
                 'hidden',
                 !matches
             );
-
 
             if (matches) {
                 mobileCount++;
@@ -3288,15 +2422,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
-
         if (desktopMessage) {
 
             if (currentSearch) {
 
-                desktopMessage.classList.remove(
-                    'hidden'
-                );
-
+                desktopMessage.classList.remove('hidden');
 
                 desktopMessage.textContent =
                     desktopCount === 0
@@ -3305,24 +2435,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
 
-                desktopMessage.classList.add(
-                    'hidden'
-                );
+                desktopMessage.classList.add('hidden');
 
             }
 
         }
 
 
-
         if (mobileMessage) {
 
             if (currentSearch) {
 
-                mobileMessage.classList.remove(
-                    'hidden'
-                );
-
+                mobileMessage.classList.remove('hidden');
 
                 mobileMessage.textContent =
                     mobileCount === 0
@@ -3331,14 +2455,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
 
-                mobileMessage.classList.add(
-                    'hidden'
-                );
+                mobileMessage.classList.add('hidden');
 
             }
 
         }
-
 
 
         if (currentCategory) {
@@ -3348,10 +2469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCategory.slice(1);
 
 
-            desktopCategoryMessage?.classList.remove(
-                'hidden'
-            );
-
+            desktopCategoryMessage?.classList.remove('hidden');
 
             if (desktopCategoryMessage) {
 
@@ -3363,10 +2481,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
 
-            mobileCategoryMessage?.classList.remove(
-                'hidden'
-            );
-
+            mobileCategoryMessage?.classList.remove('hidden');
 
             if (mobileCategoryMessage) {
 
@@ -3379,77 +2494,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } else {
 
-            desktopCategoryMessage?.classList.add(
-                'hidden'
-            );
+            desktopCategoryMessage?.classList.add('hidden');
 
-
-            mobileCategoryMessage?.classList.add(
-                'hidden'
-            );
+            mobileCategoryMessage?.classList.add('hidden');
 
         }
-
 
 
         if (currentSearch || currentCategory) {
 
-            mobileReset?.classList.remove(
-                'hidden'
-            );
-
-            mobileFilterReset?.classList.remove(
-                'hidden'
-            );
-
-            desktopReset?.classList.remove(
-                'hidden'
-            );
+            mobileReset?.classList.remove('hidden');
+            mobileFilterReset?.classList.remove('hidden');
+            desktopReset?.classList.remove('hidden');
 
         } else {
 
-            mobileReset?.classList.add(
-                'hidden'
-            );
-
-            mobileFilterReset?.classList.add(
-                'hidden'
-            );
-
-            desktopReset?.classList.add(
-                'hidden'
-            );
+            mobileReset?.classList.add('hidden');
+            mobileFilterReset?.classList.add('hidden');
+            desktopReset?.classList.add('hidden');
 
         }
 
 
+        if (mobileCount === 0 && (currentSearch || currentCategory)) {
 
-        if (
-            mobileCount === 0 &&
-            (currentSearch || currentCategory)
-        ) {
-
-            mobileEmpty?.classList.remove(
-                'hidden'
-            );
+            mobileEmpty?.classList.remove('hidden');
 
         } else {
 
-            mobileEmpty?.classList.add(
-                'hidden'
-            );
+            mobileEmpty?.classList.add('hidden');
 
         }
 
     };
 
 
-
     const searchProducts = (value) => {
 
         currentSearch =
             value.trim().toLowerCase();
-
 
         syncSearchInputs(value);
 
@@ -3458,15 +2541,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-
     desktopSearch?.addEventListener(
         'input',
         (event) => {
-
-            searchProducts(
-                event.target.value
-            );
-
+            searchProducts(event.target.value);
         }
     );
 
@@ -3474,11 +2552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileSearch?.addEventListener(
         'input',
         (event) => {
-
-            searchProducts(
-                event.target.value
-            );
-
+            searchProducts(event.target.value);
         }
     );
 
@@ -3505,9 +2579,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             document
-                .getElementById(
-                    'mobileProducts'
-                )
+                .getElementById('mobileProducts')
                 ?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
@@ -3515,7 +2587,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
     );
-
 
 
     [desktopSearch, mobileSearch].forEach((input) => {
@@ -3528,9 +2599,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     event.preventDefault();
 
-                    searchProducts(
-                        input.value
-                    );
+                    searchProducts(input.value);
 
                 }
 
@@ -3540,17 +2609,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
-    /* =====================================================
-       RESET FILTERS
-    ===================================================== */
-
     const resetAll = () => {
 
         currentSearch = '';
-
         currentCategory = '';
-
 
         syncSearchInputs('');
 
@@ -3563,7 +2625,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 'shadow-sm',
                 'border-emerald-600'
             );
-
 
             chip.classList.add(
                 'bg-white',
@@ -3580,7 +2641,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     'border-slate-200'
                 );
 
-
                 chip.classList.add(
                     'bg-emerald-600',
                     'text-white',
@@ -3596,7 +2656,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFilters();
 
     };
-
 
 
     desktopReset?.addEventListener(
@@ -3623,11 +2682,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resetAll();
 
-
             document
-                .getElementById(
-                    'mobileProducts'
-                )
+                .getElementById('mobileProducts')
                 ?.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
@@ -3637,11 +2693,6 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
 
-
-    /* =====================================================
-       CATEGORY CHIPS
-    ===================================================== */
-
     chips.forEach((chip) => {
 
         chip.addEventListener(
@@ -3649,9 +2700,7 @@ document.addEventListener('DOMContentLoaded', () => {
             () => {
 
                 currentCategory =
-                    (
-                        chip.dataset.mobileCategory || ''
-                    ).toLowerCase();
+                    (chip.dataset.mobileCategory || '').toLowerCase();
 
 
                 chips.forEach((item) => {
@@ -3662,7 +2711,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         'shadow-sm',
                         'border-emerald-600'
                     );
-
 
                     item.classList.add(
                         'bg-white',
@@ -3679,7 +2727,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     'border-slate-200'
                 );
 
-
                 chip.classList.add(
                     'bg-emerald-600',
                     'text-white',
@@ -3692,9 +2739,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 document
-                    .getElementById(
-                        'mobileProducts'
-                    )
+                    .getElementById('mobileProducts')
                     ?.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
@@ -3706,56 +2751,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
     /* =====================================================
        HOME QUICK CART
     ===================================================== */
 
     const homeCartForms =
-        document.querySelectorAll(
-            '.home-cart-form'
-        );
-
+        document.querySelectorAll('.home-cart-form');
 
     const homeQuickCart =
-        document.getElementById(
-            'homeQuickCart'
-        );
-
+        document.getElementById('homeQuickCart');
 
     const homeQuickCartProducts =
-        document.getElementById(
-            'homeQuickCartProducts'
-        );
-
+        document.getElementById('homeQuickCartProducts');
 
     const homeQuickCartCount =
-        document.getElementById(
-            'homeQuickCartCount'
-        );
-
+        document.getElementById('homeQuickCartCount');
 
     const homeQuickCartTotal =
-        document.getElementById(
-            'homeQuickCartTotal'
-        );
-
+        document.getElementById('homeQuickCartTotal');
 
     const homeCartStorageKey =
         'apna_local_bazaar_home_cart_{{ auth()->id() }}';
-
-
     if ({{ (int) $cartCount }} === 0) {
-
-        localStorage.removeItem(
-            homeCartStorageKey
-        );
-
-    }
-
+    localStorage.removeItem(homeCartStorageKey);
+}
 
     let homeSelectedProducts = {};
-
 
     try {
 
@@ -3773,11 +2794,8 @@ document.addEventListener('DOMContentLoaded', () => {
             error
         );
 
-
         homeSelectedProducts = {};
-
     }
-
 
 
     const getHomeCartStats = () => {
@@ -3786,7 +2804,6 @@ document.addEventListener('DOMContentLoaded', () => {
             Object.values(
                 homeSelectedProducts
             );
-
 
         const items =
             products.reduce(
@@ -3801,50 +2818,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 0
             );
 
-
         const total =
             products.reduce(
                 (sum, product) => {
 
                     return sum +
                         (
-                            Number(
-                                product.price || 0
-                            ) *
-                            Number(
-                                product.quantity || 0
-                            )
+                            Number(product.price || 0) *
+                            Number(product.quantity || 0)
                         );
 
                 },
                 0
             );
 
-
         return {
             products,
             items,
             total
         };
-
     };
-
 
 
     const formatHomePrice = (value) => {
 
-        return Number(
-            value || 0
-        ).toLocaleString(
-            'en-IN',
-            {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }
-        );
-
+        return Number(value || 0)
+            .toLocaleString(
+                'en-IN',
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
     };
-
 
 
     const renderHomeQuickCart = () => {
@@ -3855,15 +2861,11 @@ document.addEventListener('DOMContentLoaded', () => {
             !homeQuickCartCount ||
             !homeQuickCartTotal
         ) {
-
             return;
-
         }
-
 
         const stats =
             getHomeCartStats();
-
 
         if (!stats.products.length) {
 
@@ -3871,20 +2873,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 'hidden'
             );
 
-
             homeQuickCartProducts.innerHTML =
                 '';
 
-
             return;
-
         }
-
 
         homeQuickCart.classList.remove(
             'hidden'
         );
-
 
         homeQuickCartCount.textContent =
             stats.items +
@@ -3894,13 +2891,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     : ' items'
             );
 
-
         homeQuickCartTotal.textContent =
             '₹' +
             formatHomePrice(
                 stats.total
             );
-
 
 
         homeQuickCartProducts.innerHTML =
@@ -3939,9 +2934,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 homeSelectedProducts
             )
         );
-
     };
-
 
 
     const addHomeCartProduct = (form) => {
@@ -3949,31 +2942,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const productId =
             form.dataset.productId;
 
-
         if (!productId) {
             return;
         }
 
-
         const productName =
             form.dataset.productName;
-
 
         const productPrice =
             Number(
                 form.dataset.productPrice
             );
 
-
         const productImage =
             form.dataset.productImage;
 
 
-
         if (
-            homeSelectedProducts[
-                productId
-            ]
+            homeSelectedProducts[productId]
         ) {
 
             homeSelectedProducts[
@@ -4000,16 +2986,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 quantity:
                     1
-
             };
-
         }
 
 
         renderHomeQuickCart();
-
     };
-
 
 
     homeCartForms.forEach((form) => {
@@ -4020,12 +3002,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 event.preventDefault();
 
-
                 const button =
                     form.querySelector(
                         'button'
                     );
-
 
                 const text =
                     form.querySelector(
@@ -4033,17 +3013,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
 
 
-
                 if (button) {
 
                     button.disabled = true;
-
 
                     button.classList.add(
                         'opacity-70',
                         'cursor-wait'
                     );
-
                 }
 
 
@@ -4051,9 +3028,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     text.textContent =
                         'Adding...';
-
                 }
-
 
 
                 try {
@@ -4079,7 +3054,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                     'Accept':
                                         'application/json,text/html'
-
                                 },
 
                                 credentials:
@@ -4087,10 +3061,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                 redirect:
                                     'follow'
-
                             }
                         );
-
 
 
                     if (!response.ok) {
@@ -4098,7 +3070,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error(
                             'Cart request failed.'
                         );
-
                     }
 
 
@@ -4107,16 +3078,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
 
 
-
-                    /* ==========================================
-                       UPDATE REAL HEADER CART BADGE
-                    ========================================== */
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Update real header badge
+                    |--------------------------------------------------------------------------
+                    */
 
                     const desktopCartCount =
                         document.getElementById(
                             'desktopCartCount'
                         );
-
 
                     const mobileCartCount =
                         document.getElementById(
@@ -4133,27 +3104,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             return;
                         }
 
-
                         const current =
                             Number(
                                 badge.textContent
                             ) || 0;
 
-
                         badge.textContent =
                             current + 1;
-
                     });
-
 
 
                     if (text) {
 
                         text.textContent =
                             'Added ✓';
-
                     }
-
 
 
                     if (button) {
@@ -4162,13 +3127,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             'bg-emerald-600'
                         );
 
-
                         button.classList.add(
                             'bg-slate-900'
                         );
-
                     }
-
 
 
                     setTimeout(() => {
@@ -4181,7 +3143,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 )
                                     ? 'Add'
                                     : 'Add to Cart';
-
                         }
 
 
@@ -4190,22 +3151,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             button.disabled =
                                 false;
 
-
                             button.classList.remove(
                                 'opacity-70',
                                 'cursor-wait',
                                 'bg-slate-900'
                             );
 
-
                             button.classList.add(
                                 'bg-emerald-600'
                             );
-
                         }
 
                     }, 1000);
-
 
 
                 } catch (error) {
@@ -4220,7 +3177,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         text.textContent =
                             'Try Again';
-
                     }
 
 
@@ -4229,19 +3185,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         button.disabled =
                             false;
 
-
                         button.classList.remove(
                             'opacity-70',
                             'cursor-wait'
                         );
-
                     }
 
 
                     alert(
                         'Product cart me add nahi ho saka. Please dobara try karo.'
                     );
-
                 }
 
             }
@@ -4250,10 +3203,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-
-    /* =====================================================
-       RESTORE QUICK CART AFTER REFRESH
-    ===================================================== */
+    /*
+    |--------------------------------------------------------------------------
+    | Restore QUICK CART after refresh
+    |--------------------------------------------------------------------------
+    */
 
     renderHomeQuickCart();
 
@@ -4261,9 +3215,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 
-
-
 </body>
 </html>
-
-
