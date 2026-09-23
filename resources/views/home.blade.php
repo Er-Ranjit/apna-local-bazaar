@@ -58,17 +58,12 @@
             >
 
             <div>
-                <p class="text-[11px] font-medium text-slate-400">
-                    Deliver to
-                </p>
-
+                
                 <p
                     id="desktopLocationText"
                     class="max-w-40 truncate text-sm font-bold text-slate-800"
                 >
-                    {{ auth()->check() && auth()->user()->latitude !== null && auth()->user()->longitude !== null ? 'Location Saved' : 'Select Location' }}
-                    <span class="ml-1 text-slate-400">⌄</span>
-                </p>
+                    {{ auth()->check() && auth()->user()->latitude !== null && auth()->user()->longitude !== null ? 'Location Saved' : 'Select Location' }}                </p>
             </div>
         </button>
 <button
@@ -86,10 +81,6 @@
                 class="max-w-28 truncate text-xs font-bold text-slate-800 sm:max-w-36"
             >
                 {{ auth()->check() && auth()->user()->latitude !== null && auth()->user()->longitude !== null ? 'Location Saved' : 'Select Location' }}
-            </span>
-
-            <span class="text-slate-400">
-                ⌄
             </span>
         </button>
 <div
@@ -147,21 +138,7 @@
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
 
-                    <div class="hidden text-left xl:block">
-
-                        <p class="text-[11px] font-medium text-slate-400">
-                            Welcome back
-                        </p>
-
-                        <p class="max-w-28 truncate text-sm font-bold text-slate-800">
-                            {{ auth()->user()->name }}
-                        </p>
-
-                    </div>
-
-                    <span class="text-slate-400">
-                        ⌄
-                    </span>
+                    <div class="hidden text-left xl:block"></div>
 
                 </summary>
 
